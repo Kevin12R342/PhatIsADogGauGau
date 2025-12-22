@@ -3,218 +3,247 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ôn Tập Quốc Phòng 12 - Bánh Mì Pita</title>
+    <title>Ôn Tập - Bánh Mì Pita ẩn danh</title>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --grad: linear-gradient(135deg, #FF0080 0%, #FF8C00 100%);
-            --glass: rgba(255, 255, 255, 0.95);
-            --pita: #e67e22;
+            /* Tông màu xanh lá và xanh lam dịu nhẹ */
+            --soft-grad: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --blue-grad: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --pita-green: #27ae60;
+            --pita-blue: #2980b9;
+            --bg-light: #f0f7f4;
         }
+
         * { box-sizing: border-box; font-family: 'Quicksand', sans-serif; }
+        
         body { 
-            background: linear-gradient(45deg, #ee0979, #ff6a00);
-            min-height: 100vh; margin: 0; padding: 15px;
+            background: linear-gradient(120deg, #e0f2f1 0%, #e1f5fe 100%);
+            margin: 0; padding: 10px; min-height: 100vh;
             display: flex; justify-content: center; align-items: flex-start;
         }
-        .container {
-            width: 100%; max-width: 700px; background: var(--glass);
-            padding: 30px; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            margin-top: 20px; animation: fadeIn 0.6s ease;
+        
+        .app { 
+            width: 100%; max-width: 700px; background: rgba(255, 255, 255, 0.98); 
+            padding: 25px; border-radius: 25px; 
+            box-shadow: 0 10px 30px rgba(41, 128, 185, 0.1); 
+            margin-top: 20px;
+            animation: fadeIn 0.8s ease;
         }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
-        h1 { text-align: center; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 2rem; }
-        .author-info { text-align: center; font-weight: 700; color: #555; margin-bottom: 20px; }
-        
-        input, select { width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 15px; font-size: 1rem; outline: none; transition: 0.3s; margin-top: 5px; }
-        input:focus { border-color: #ff6a00; box-shadow: 0 0 10px rgba(255,106,0,0.2); }
-        .group { margin-bottom: 20px; }
-        
-        .pita-choice { background: #fff4e6; padding: 20px; border-radius: 20px; text-align: center; border: 2px dashed var(--pita); }
-        .choice-row { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-c { flex: 1; padding: 12px; border: 2px solid var(--pita); border-radius: 12px; background: #fff; cursor: pointer; font-weight: 700; color: var(--pita); transition: 0.3s; }
-        .btn-c.active { background: var(--pita); color: #fff; transform: scale(1.05); }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        h1 { 
+            text-align: center; color: var(--pita-blue); 
+            font-size: clamp(1.4rem, 5vw, 2rem); margin: 10px 0;
+            letter-spacing: -0.5px;
+        }
+        .author-tag { text-align: center; font-weight: 700; color: #7f8c8d; margin-bottom: 25px; display: block; font-size: 0.9rem; }
+
+        .form-card { margin-bottom: 15px; }
+        label { display: block; font-weight: 700; color: #34495e; margin-bottom: 8px; font-size: 0.95rem; }
+        input { 
+            width: 100%; padding: 14px; border: 2px solid #d1d8e0; border-radius: 12px; 
+            font-size: 1rem; outline: none; transition: 0.3s; background: #fff;
+        }
+        input:focus { border-color: var(--pita-blue); }
+
+        /* Khảo sát Pita */
+        .pita-box { background: #e8f6f3; padding: 18px; border-radius: 20px; text-align: center; border: 2px dashed #27ae60; margin: 20px 0; }
+        .row-btn { display: flex; gap: 10px; margin-top: 15px; }
+        .choice-btn { 
+            flex: 1; padding: 12px; border: 2px solid var(--pita-green); border-radius: 12px; 
+            font-weight: 800; cursor: pointer; transition: 0.3s;
+            background: white; color: var(--pita-green);
+        }
+        .choice-btn.active { background: var(--pita-green); color: white; transform: scale(1.02); }
 
         /* Quiz UI */
         #quiz-box { display: none; }
-        .header { display: flex; justify-content: space-between; font-weight: 700; color: #ff0080; margin-bottom: 10px; }
-        .prog { height: 10px; background: #eee; border-radius: 5px; margin-bottom: 20px; overflow: hidden; }
-        .prog-in { height: 100%; background: var(--grad); width: 0%; transition: 0.3s; }
+        .stats { display: flex; justify-content: space-between; font-weight: 700; color: var(--pita-blue); margin-bottom: 10px; }
+        .progress-container { height: 8px; background: #eee; border-radius: 10px; margin-bottom: 25px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--soft-grad); width: 0%; transition: 0.4s; }
         
-        .q-text { font-size: 1.2rem; font-weight: 700; margin-bottom: 20px; color: #333; }
-        .opts { display: flex; flex-direction: column; gap: 10px; }
-        .opt { padding: 15px; border: 2px solid #f0f0f0; border-radius: 15px; cursor: pointer; transition: 0.2s; background: #fff; font-weight: 500; }
-        .opt:hover { border-color: #ff6a00; background: #fff9f5; }
-        .correct { background: #d1fae5 !important; border-color: #10b981 !important; color: #064e3b; font-weight: 700; }
-        .wrong { background: #fee2e2 !important; border-color: #ef4444 !important; color: #7f1d1d; }
+        .q-text { font-size: 1.15rem; font-weight: 700; margin-bottom: 20px; color: #2c3e50; line-height: 1.5; }
+        .opts { display: grid; gap: 10px; }
+        .opt { 
+            padding: 15px; border: 2px solid #ecf0f1; border-radius: 15px; cursor: pointer; 
+            background: #fff; transition: 0.2s; font-weight: 500; min-height: 55px; display: flex; align-items: center;
+        }
+        .opt:hover { border-color: var(--pita-blue); background: #f7fbff; }
+        .correct { background: #d4efdf !important; border-color: #27ae60 !important; color: #145a32; font-weight: 700; }
+        .wrong { background: #fadbd8 !important; border-color: #e74c3c !important; color: #78281f; }
 
-        .btn-main { width: 100%; padding: 18px; border: none; border-radius: 15px; background: var(--grad); color: #fff; font-size: 1.1rem; font-weight: 700; cursor: pointer; margin-top: 25px; transition: 0.3s; }
-        .btn-main:hover { opacity: 0.9; transform: translateY(-2px); }
-        
-        #yt-frame { border-radius: 15px; margin-bottom: 15px; display: none; overflow: hidden; }
+        #yt-area { border-radius: 15px; margin-bottom: 20px; display: none; overflow: hidden; height: 80px; }
+        .btn-main { 
+            width: 100%; padding: 16px; background: var(--blue-grad); color: white; border: none; 
+            border-radius: 15px; font-size: 1.1rem; font-weight: 800; cursor: pointer; margin-top: 20px; 
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="app">
     <h1>BÁNH MÌ PITA ẨN DANH</h1>
-    <div class="author-info">Thought Partner: Ôn Tập 2025</div>
+    <span class="author-tag">Hệ thống ôn tập Quốc phòng - Tông màu dịu mắt</span>
 
     <div id="start-box">
-        <div class="group"><label><b>Tên của bạn:</b></label><input type="text" id="name" placeholder="Nhập tên..." autocomplete="off"></div>
-        <div class="group"><label><b>YouTube URL:</b></label><input type="text" id="yt" placeholder="Dán link YouTube vào đây..."></div>
-        <div class="pita-choice">
+        <div class="form-card">
+            <label>Họ và tên thí sinh:</label>
+            <input type="text" id="name" placeholder="Nhập tên của bạn...">
+        </div>
+        <div class="form-card">
+            <label>Link nhạc YouTube (Dán vào đây):</label>
+            <input type="text" id="yt" placeholder="https://www.youtube.com/watch?v=...">
+        </div>
+        <div class="pita-box">
             <b>Bạn có thích Bánh Mì Pita không?</b>
-            <div class="choice-row">
-                <button class="btn-c" id="cy" onclick="setChoice(true)">CÓ!</button>
-                <button class="btn-c" id="cn" onclick="setChoice(false)">KHÔNG...</button>
+            <div class="row-btn">
+                <button class="choice-btn" id="cy" onclick="setChoice(true)">CÓ!</button>
+                <button class="choice-btn" id="cn" onclick="setChoice(false)">KHÔNG</button>
             </div>
         </div>
-        <button class="btn-main" onclick="start()">Bắt đầu ngay!</button>
+        <button class="btn-main" onclick="startQuiz()">Bắt đầu ôn thi (60 Câu)</button>
     </div>
 
     <div id="quiz-box">
-        <div id="yt-frame"></div>
-        <div class="header"><span id="u-tag"></span><span id="timer">45:00</span></div>
-        <div class="prog"><div class="prog-in" id="pi"></div></div>
+        <div id="yt-area"></div>
+        <div class="stats">
+            <span id="u-tag"></span>
+            <span id="timer">45:00</span>
+        </div>
+        <div class="progress-container"><div class="progress-bar" id="pb"></div></div>
         <div id="q-area"></div>
         <button class="btn-main" id="next" style="display:none;" onclick="goNext()">Câu tiếp theo &rarr;</button>
     </div>
 
     <div id="res-box" style="display:none; text-align:center;">
         <h2 id="r-head"></h2>
-        <div style="font-size: 3.5rem; color: #ff0080; font-weight: 800;" id="r-score">0.0</div>
-        <p id="r-detail" style="font-weight: 700; font-size: 1.2rem;"></p>
-        <p id="r-pita"></p>
-        <button class="btn-main" onclick="location.reload()">Làm lại bài mới</button>
+        <div style="font-size: 4rem; color: var(--pita-blue); font-weight: 800; margin: 10px 0;" id="r-grade">0.0</div>
+        <p id="r-detail" style="font-size: 1.2rem; font-weight: 700; color: #7f8c8d;"></p>
+        <p id="r-pita" style="font-size: 1.1rem; font-weight: 700;"></p>
+        <button class="btn-main" onclick="location.reload()">Làm lại từ đầu</button>
     </div>
 </div>
 
 <script>
-    // Dữ liệu 59 câu hỏi  + 1 câu bonus
+    // Toàn bộ dữ liệu 59 câu ôn tập 
     const bank = [
-        {q: "Tập đoàn Pôn Pốt – Iêng Xary phát động chiến tranh xâm lược Việt Nam vào ngày nào?", options: ["30-4-1975", "30-4-1978", "30-4-1977", "30-4-1976"], a: 2}, // [cite: 2, 3]
-        {q: "Bộ Chính trị quyết định phát động chiến tranh nhân dân phản công Pôn Pốt vào ngày:", options: ["15-6-1976", "15-6-1977", "15-6-1978", "15-6-1979"], a: 2}, // [cite: 4, 5]
-        {q: "Mặt trận Đoàn kết dân tộc cứu nước Cam-pu-chia thành lập vào ngày:", options: ["02-12-1976", "02-12-1977", "02-12-1978", "02-12-1979"], a: 2}, // [cite: 6, 7]
-        {q: "Pôn Pốt mở cuộc tiến công toàn tuyến biên giới Tây Nam vào ngày:", options: ["23-12-1975", "23-12-1976", "23-12-1977", "23-12-1978"], a: 3}, // [cite: 8, 9]
-        {q: "Thủ đô Phnôm Pênh hoàn toàn được giải phóng vào ngày:", options: ["07-01-1976", "07-01-1977", "07-01-1978", "07-01-1979"], a: 3}, // [cite: 10, 11]
-        {q: "Nét chính nghệ thuật quân sự biên giới Tây Nam là chủ động tiến hành:", options: ["Chiến tranh nhân dân", "Chiến tranh nhân dân tại chỗ", "Chiến tranh nhân dân tại chỗ rộng khắp", "Chiến tranh nhân dân tại chỗ đồng loạt"], a: 2}, // [cite: 12-14]
-        {q: "Trung Quốc huy động lực lượng lớn tiến công biên giới phía Bắc Việt Nam ngày:", options: ["17-02-1978", "17-3-1978", "17-02-1979", "17-3-1979"], a: 2}, // [cite: 15, 16]
-        {q: "Lệnh Tổng động viên bảo vệ Tổ quốc được công bố vào ngày:", options: ["05-01-1979", "05-02-1979", "05-3-1979", "05-4-1979"], a: 2}, // [cite: 17, 18]
-        {q: "Về cơ bản, Trung Quốc đã rút quân khỏi nước ta vào ngày:", options: ["15-3-1979", "16-3-1979", "17-3-1979", "18-3-1979"], a: 3}, // [cite: 19, 20]
-        {q: "Trung Quốc dùng vũ lực đánh chiếm nhóm đảo phía Tây Hoàng Sa vào năm:", options: ["1971", "1972", "1973", "1974"], a: 3}, // [cite: 21, 22]
-        {q: "Trung Quốc sử dụng vũ lực chiếm đóng trái phép Gạc Ma, Xu Bi (Trường Sa) năm:", options: ["1986", "1987", "1988", "1989"], a: 2}, // [cite: 23, 24]
-        {q: "Hệ thống nhà trường quân đội có bao nhiêu học viện và các trường sĩ quan, đại học?", options: ["10 học viện - 11 trường sĩ quan, đại học", "11 học viện - 10 trường", "10 học viện - 10 trường", "9 học viện - 11 trường"], a: 0}, // [cite: 25-27]
-        {q: "Yêu cầu tuyển sinh Quân đội, Công an là:", options: ["Đúng quy chế, dân chủ, công khai, minh bạch, chính xác, công bằng", "Đúng hướng dẫn, bí mật", "Đúng quy định, nhanh chóng", "Theo chỉ thị cấp trên"], a: 0}, // [cite: 31]
-        {q: "Nghĩa vụ của học viên trường Quân đội, Công an là gì?", options: ["Nghỉ hè, lễ Tết", "Sẵn sàng nhận nhiệm vụ theo phân công khi ra trường", "Được cấp trang thiết bị", "Hưởng khen thưởng"], a: 1}, // [cite: 37]
-        {q: "Cơ sở nào KHÔNG tuyển học sinh trung học phổ thông?", options: ["Học viện Hậu cần", "Học viện Lục quân", "Học viện Biên phòng", "Học viện Quân y"], a: 1}, // [cite: 40]
-        {q: "Hạ sĩ quan, binh sĩ tại ngũ dự tuyển trường Quân đội phải phục vụ đủ:", options: ["6 tháng", "9 tháng", "12 tháng trở lên", "15 tháng"], a: 2}, // [cite: 44]
-        {q: "Quân nhân chuyên nghiệp dự tuyển trường Quân đội phải phục vụ đủ:", options: ["6 tháng", "12 tháng trở lên", "18 tháng", "24 tháng"], a: 1}, // [cite: 46]
-        {q: "Thanh niên ngoài Quân đội dự tuyển trường Quân đội phải có độ tuổi:", options: ["Không quá 20", "Không quá 21", "Không quá 22", "Không quá 23"], a: 1}, // [cite: 49]
-        {q: "Quân nhân tại ngũ hoặc xuất ngũ dự tuyển trường Quân đội có độ tuổi:", options: ["Không quá 22", "Không quá 23", "Không quá 24", "Không quá 21"], a: 2}, // [cite: 53]
-        {q: "Phương thức nào KHÔNG áp dụng tuyển sinh đại học Quân đội?", options: ["Xét tuyển thẳng", "Xét kết quả thi ĐGNL trường đại học nước ngoài", "Xét kết quả thi ĐGNL trong nước", "Xét kết quả thi ĐGNL Bộ Quốc phòng"], a: 1}, // [cite: 57]
-        {q: "Thí sinh dự tuyển sinh đào tạo đại học trong các trường Quân đội:", options: ["Đều phải qua sơ tuyển", "Miễn sơ tuyển nếu học giỏi", "Miễn sơ tuyển nếu là con quân nhân", "Miễn sơ tuyển nếu được giải quốc gia"], a: 0}, // [cite: 60]
-        {q: "Ngành nào được đào tạo ở Học viện An ninh nhân dân?", options: ["An ninh mạng và phòng chống tội phạm công nghệ cao", "Trinh sát kĩ thuật", "Nghiệp vụ cảnh sát", "Kĩ thuật Công an"], a: 0}, // [cite: 65]
-        {q: "Đối tượng nào KHÔNG thuộc tuyển mới đại học chính quy trường Công an?", options: ["Chỉ huy từ cấp đội trở lên", "Học sinh Trường Văn hoá", "Chiến sĩ nghĩa vụ", "Công dân thường trú"], a: 0}, // [cite: 70]
-        {q: "Việc nào KHÔNG có trong nội dung sơ tuyển vào trường Công an?", options: ["Kiểm tra học bạ", "Kiểm tra sức khoẻ", "Chụp ảnh bố đẻ và mẹ đẻ của thí sinh", "Thẩm tra chính trị"], a: 2}, // [cite: 78]
-        {q: "Chức năng của Bộ Quốc phòng là tham mưu với Đảng, Nhà nước về:", options: ["Xây dựng quốc phòng toàn dân", "Đường lối, nhiệm vụ quân sự, quốc phòng bảo vệ Tổ quốc", "Huấn luyện lực lượng", "Quản lý dân quân"], a: 1}, // [cite: 80]
-        {q: "Chức năng của Bộ Tổng tham mưu QĐND Việt Nam là:", options: ["Tham mưu chiến lược về xây dựng nền quốc phòng toàn dân", "Chỉ đạo huấn luyện", "Quản lý quân sự", "Tổ chức thực hiện xây dựng Quân đội"], a: 0}, // [cite: 82]
-        {q: "Chức năng của Tổng cục chính trị QĐND Việt Nam là:", options: ["Giúp Quân uỷ Trung ương về công tác Đảng, công tác chính trị", "Quản lý nhà nước về quốc phòng", "Điều hành phát triển Quân đội", "Chỉ đạo dân quân"], a: 0}, // [cite: 85]
-        {q: "Một trong chức năng của quân khu là:", options: ["Huấn luyện chuyên ngành", "Chỉ đạo xây dựng Hải quân", "Tham mưu, chỉ đạo xây dựng nền quốc phòng toàn dân", "Chiến đấu độc lập"], a: 2}, // [cite: 91]
-        {q: "Một trong chức năng của quân đoàn là:", options: ["Chiến đấu vũ khí trang bị riêng", "Tham mưu chỉ đạo pháo binh", "Có thể tác chiến độc lập hoặc đảm nhiệm hướng chiến dịch", "Quản lý dân quân"], a: 2}, // [cite: 95]
-        {q: "Quân hiệu của Quân đội nhân dân Việt Nam là (...) của Quân đội.", options: ["Biểu trưng", "Biểu tượng", "Hình tượng", "Hình ảnh"], a: 1}, // [cite: 97]
-        {q: "Quân hiệu của QĐND Việt Nam hình tròn, đường kính lớn nhất là:", options: ["36 mm", "38 mm", "40 mm", "42 mm"], a: 0}, // [cite: 98]
-        {q: "Hạ sĩ quan Quân đội nhân dân Việt Nam có mấy bậc?", options: ["Hai bậc", "Ba bậc: Hạ sĩ, Trung sĩ, Thượng sĩ", "Bốn bậc", "Một bậc"], a: 1}, // [cite: 102]
-        {q: "Chức năng của Bộ Công an là tham mưu với Đảng, Nhà nước về:", options: ["Bảo vệ khu vực làm việc", "Bảo vệ an ninh quốc gia, bảo đảm trật tự an toàn xã hội", "Quản lý trật tự xã hội", "Thực hiện biện pháp vũ trang"], a: 1}, // [cite: 105]
-        {q: "Công an hiệu của Công an nhân dân Việt Nam có đường kính:", options: ["34 mm", "35 mm", "36 mm", "37 mm"], a: 2}, // [cite: 109]
-        {q: "Cành tùng kép bao quanh Công an hiệu có kích thước:", options: ["Cao 52, rộng 62", "Cao 54, rộng 64", "Cao 56, rộng 66", "Cao 58, rộng 68"], a: 1}, // [cite: 111]
-        {q: "Sĩ quan chuyên môn kĩ thuật Công an nhân dân cấp tá có mấy bậc?", options: ["Một bậc", "Ba bậc: Thiếu tá, Trung tá, Thượng tá", "Hai bậc", "Bốn bậc"], a: 1}, // [cite: 113]
-        {q: "Phù hiệu Công an nhân dân Việt Nam là (...) quy định để chỉ tổ chức.", options: ["Dấu hiệu", "Lô-gô", "Hình hiệu", "Hình ảnh"], a: 0}, // [cite: 117]
-        {q: "Quần áo, mũ kê pi của Cảnh sát giao thông Việt Nam có màu:", options: ["Xanh rêu", "Lúa chín vàng", "Vàng", "Xanh lam"], a: 1}, // [cite: 119]
-        {q: "Ngắm bắn là đưa quỹ đạo đường đạn đi qua:", options: ["Mục tiêu", "Điểm định bắn trúng", "Mục tiêu định trúng", "Điểm định bắn trúng trên mục tiêu"], a: 3}, // [cite: 122]
-        {q: "Đường ngắm cơ bản là từ mắt qua giữa mép trên khe ngắm đến:", options: ["Mép trên đầu ngắm", "Điểm chính giữa mép trên đầu ngắm", "Mục tiêu", "Khe ngắm"], a: 1}, // [cite: 124]
-        {q: "Điểm xác định trước để khi ngắm vào đó đạn sẽ trúng mục tiêu gọi là:", options: ["Điểm ngắm đúng", "Điểm ngắm chụm", "Điểm ngắm trúng", "Điểm ngắm cơ bản"], a: 0}, // [cite: 127]
-        {q: "Đường ngắm đúng là đường ngắm cơ bản dóng vào điểm ngắm với điều kiện:", options: ["Mặt súng thăng bằng", "Mặt súng cố định", "Nòng súng thăng bằng", "Nòng súng cố định"], a: 0}, // [cite: 130]
-        {q: "Khi ngắm đúng, nếu mặt súng nghiêng bên phải thì điểm chạm sẽ:", options: ["Lệch lên trên", "Lệch về bên trái", "Lệch và thấp về bên phải", "Lệch và cao về bên phải"], a: 2}, // [cite: 133]
-        {q: "Động tác nằm bắn không tì súng tiểu liên AK gồm:", options: ["Chuẩn bị bắn, bắn, thôi bắn", "Chuẩn bị bắn, bắn, đứng dậy", "Lắp đạn, bắn, tháo đạn", "Gương súng, ngắm, bóp cò"], a: 0}, // [cite: 136]
-        {q: "Khẩu lệnh thực hiện động tác nằm bắn súng AK là:", options: ["Nằm bắn", "Nằm chuẩn bị bắn", "Chuẩn bị", "Chuẩn bị bắn"], a: 1}, // [cite: 141]
-        {q: "Khi nghe dứt khẩu lệnh chuẩn bị nằm bắn, người bắn thực hiện:", options: ["2 cử động", "3 cử động", "4 cử động", "5 cử động"], a: 1}, // [cite: 144]
-        {q: "Ở cử động 1 nằm bắn, xoay gót bàn chân trái hướng theo:", options: ["Gót bàn chân trái", "Gót bàn chân phải", "Mũi bàn chân trái", "Mũi bàn chân phải"], a: 3}, // [cite: 147]
-        {q: "Ở cử động 2 nằm bắn, khuỷu tay trái hạ xuống cách hướng bàn chân phải:", options: ["10 cm", "15 cm", "20 cm", "25 cm"], a: 1}, // [cite: 149]
-        {q: "Khi lắp đạn nằm bắn, kẹp hộp tiếp đạn vào má phải ốp lót bằng:", options: ["Ngón út và áp út", "Ngón áp út và ngón giữa", "Ngón giữa và cái", "Ngón trỏ và cái"], a: 1}, // [cite: 152]
-        {q: "Khi gương súng nằm bắn AK phải bảo đảm yếu tố:", options: ["Bằng, chắc, đều", "Chắc, đều, bền", "Bằng, chắc, đều, bền", "Bằng, chắc, đều, êm"], a: 2}, // [cite: 156]
-        {q: "Động tác ngắm nằm bắn AK cần áp má phải vào báng súng lực:", options: ["Vừa phải", "Thật chặt", "Tránh áp má", "Gối má"], a: 0}, // [cite: 158]
-        {q: "Khi thực hiện động tác ngắm bắn AK, người bắn:", options: ["Nheo một mắt hoặc mở cả hai mắt", "Bắt buộc nheo mắt trái", "Bắt buộc nheo mắt phải", "Bắt buộc mở hai mắt"], a: 0}, // [cite: 163]
-        {q: "Khi bóp cò súng AK, dùng bộ phận nào của ngón trỏ tay phải?", options: ["Phần cuối đốt thứ hai", "Phần giữa đốt thứ nhất", "Phần cuối đốt thứ nhất", "Phần giữa đốt thứ hai"], a: 1}, // [cite: 169]
-        {q: "Khi bóp cò cần bảo đảm (...) theo trục nòng súng đến khi đạn nổ.", options: ["Êm, đều, từ từ, thẳng về sau", "Êm, nhanh", "Từ từ, thẳng", "Nhanh, thẳng về sau"], a: 0}, // [cite: 172]
-        {q: "Kết quả ngắm chụm xếp loại Giỏi nếu đường kính 3 điểm chấm là:", options: ["2 mm", "3 mm", "4 mm", "5 mm"], a: 3}, // [cite: 175]
-        {q: "Kết quả ngắm chụm xếp loại Đạt nếu đường kính 3 điểm chấm là:", options: ["7 mm", "8 mm", "9 mm", "10 mm"], a: 3}, // [cite: 177]
-        {q: "Khung bia nền trắng bia số 4 có kích thước:", options: ["70 x 70 cm", "75 x 75 cm", "80 x 80 cm", "85 x 85 cm"], a: 1}, // [cite: 179]
-        {q: "Cự li bắn bia mục tiêu số 4 là bao nhiêu?", options: ["150 m", "130 m", "120 m", "100 m"], a: 3}, // [cite: 182]
-        {q: "Xếp loại Không đạt bia số 4 nếu tổng 3 phát bắn dưới:", options: ["15 điểm", "16 điểm", "17 điểm", "18 điểm"], a: 0}, // [cite: 184]
+        {q: "Tập đoàn Pôn Pốt – Iêng Xary phát động chiến tranh xâm lược Việt Nam vào ngày", options: ["30-4-1975", "30-4-1978", "30-4-1977", "30-4-1976"], a: 2}, // 1C
+        {q: "Bộ Chính trị và Quân uỷ Trung ương phát động phản công tập đoàn Pôn Pốt vào ngày", options: ["15-6-1976", "15-6-1977", "15-6-1978", "15-6-1979"], a: 2}, // 2C
+        {q: "Mặt trận Đoàn kết dân tộc cứu nước Cam-pu-chia thành lập vào ngày", options: ["02-12-1976", "02-12-1977", "02-12-1978", "02-12-1979"], a: 2}, // 3C
+        {q: "Pôn Pốt mở cuộc tiến công toàn tuyến biên giới Tây Nam nước ta vào ngày", options: ["23-12-1975", "23-12-1976", "23-12-1977", "23-12-1978"], a: 3}, // 4D
+        {q: "Thủ đô Phnôm Pênh hoàn toàn được giải phóng vào ngày", options: ["07-01-1976", "07-01-1977", "07-01-1978", "07-01-1979"], a: 3}, // 5D
+        {q: "Một trong nét chính nghệ thuật quân sự biên giới Tây Nam là tiến hành chiến tranh nhân dân tại chỗ", options: ["chiến tranh nhân dân", "chiến tranh nhân dân tại chỗ", "chiến tranh nhân dân tại chỗ rộng khắp", "chiến tranh nhân dân tại chỗ đồng loạt"], a: 2}, // 8C
+        {q: "Chính quyền Trung Quốc tiến công sang lãnh thổ Việt Nam vào ngày", options: ["17-02-1978", "17-3-1978", "17-02-1979", "17-3-1979"], a: 2}, // 10C
+        {q: "Lệnh Tổng động viên bảo vệ Tổ quốc được công bố vào ngày", options: ["05-01-1979", "05-02-1979", "05-3-1979", "05-4-1979"], a: 2}, // 11C
+        {q: "Về cơ bản, Trung Quốc đã rút quân khỏi nước ta vào ngày", options: ["15-3-1979", "16-3-1979", "17-3-1979", "18-3-1979"], a: 3}, // 13D
+        {q: "Trung Quốc dùng vũ lực đánh chiếm nhóm đảo phía Tây quần đảo Hoàng Sa vào năm", options: ["1971", "1972", "1973", "1974"], a: 3}, // 17D
+        {q: "Trung Quốc sử dụng vũ lực chiếm đóng trái phép bãi đá Gạc Ma (Trường Sa) vào năm", options: ["1986", "1987", "1988", "1989"], a: 2}, // 18C
+        {q: "Hiện nay hệ thống nhà trường quân đội có bao nhiêu học viện và các trường sĩ quan, đại học?", options: ["10 học viện - 11 trường", "11 học viện - 10 trường", "9 học viện - 12 trường", "12 học viện - 9 trường"], a: 0}, // 19A
+        {q: "Yêu cầu tuyển sinh Quân đội, Công an là tổ chức tuyển sinh đúng quy chế, dân chủ, công khai,", options: ["minh bạch, chính xác, công bằng", "bí mật", "nhanh gọn", "nội bộ"], a: 0}, // 20A
+        {q: "Học viên sẵn sàng nhận nhiệm vụ theo phân công khi ra trường là:", options: ["quyền lợi", "nguyện vọng", "nghĩa vụ", "sở thích"], a: 2}, // 21C
+        {q: "Trong các cơ sở sau, cơ sở nào của Quân đội KHÔNG tuyển học sinh THPT?", options: ["Học viện Hậu cần", "Học viện Lục quân", "Học viện Biên phòng", "Học viện Quân y"], a: 1}, // 22B
+        {q: "Hạ sĩ quan, binh sĩ tại ngũ dự tuyển trường Quân đội phải phục vụ đủ:", options: ["6 tháng", "9 tháng", "12 tháng trở lên", "15 tháng"], a: 2}, // 23C
+        {q: "Quân nhân chuyên nghiệp dự tuyển trường Quân đội phải phục vụ đủ:", options: ["6 tháng", "12 tháng trở lên", "18 tháng", "24 tháng"], a: 1}, // 24B
+        {q: "Thanh niên ngoài Quân đội dự tuyển trường Quân đội có độ tuổi:", options: ["không quá 20", "không quá 21", "không quá 22", "không quá 23"], a: 1}, // 25B
+        {q: "Quân nhân tại ngũ dự tuyển trường Quân đội phải có độ tuổi:", options: ["không quá 21", "không quá 22", "không quá 23", "không quá 24"], a: 2}, // 26C
+        {q: "Phương thức nào KHÔNG áp dụng đối với tuyển sinh đại học Quân đội?", options: ["Xét tuyển thẳng", "Xét ĐGNL trường đại học trong nước", "Xét ĐGNL trường đại học nước ngoài", "Xét ĐGNL Bộ Quốc phòng"], a: 2}, // 27C
+        {q: "Thí sinh dự tuyển sinh đào tạo đại học trong các trường Quân đội", options: ["đều phải qua sơ tuyển", "miễn sơ tuyển nếu học giỏi", "miễn sơ tuyển nếu đạt giải quốc gia", "tự nguyện"], a: 0}, // 28A
+        {q: "Ngành nào được đào tạo ở Học viện An ninh nhân dân?", options: ["An ninh mạng và phòng chống tội phạm công nghệ cao", "Trinh sát kĩ thuật", "Nghiệp vụ cảnh sát", "Kĩ thuật Công an"], a: 0}, // 29A
+        {q: "Đối tượng nào KHÔNG tuyển mới đại học chính quy trường Công an?", options: ["Chỉ huy từ cấp đội trở lên", "Học sinh Trường Văn hoá", "Chiến sĩ nghĩa vụ", "Công dân thường trú"], a: 0}, // 30A
+        {q: "Việc nào KHÔNG có trong nội dung sơ tuyển vào trường Công an?", options: ["Kiểm tra học bạ", "Kiểm tra sức khoẻ", "Thẩm tra chính trị", "Chụp ảnh bố đẻ và mẹ đẻ của thí sinh"], a: 3}, // 31D
+        {q: "Chức năng của Bộ Quốc phòng là tham mưu với Đảng, Nhà nước về:", options: ["hậu cần", "nhiệm vụ quân sự, quốc phòng bảo vệ Tổ quốc", "kỹ thuật súng", "giao thông"], a: 1}, // 32B
+        {q: "Bộ Tổng tham mưu tham mưu chiến lược về xây dựng:", options: ["nền quốc phòng toàn dân", "dân quân tự vệ", "hệ thống chính trị", "bí mật quân sự"], a: 0}, // 33A
+        {q: "Tổng cục chính trị giúp Quân uỷ Trung ương về công tác Đảng, công tác chính trị trong", options: ["Quân đội", "Dân quân", "Hậu cần", "Biên phòng"], a: 0}, // 34A
+        {q: "Một trong chức năng của quân khu là tham mưu, chỉ đạo xây dựng", options: ["đặc công", "pháo binh", "nền quốc phòng toàn dân", "hải quân"], a: 2}, // 35C
+        {q: "Một trong chức năng của quân đoàn là tác chiến độc lập hoặc đảm nhiệm một", options: ["mũi tấn công", "hướng chiến dịch", "vùng biển", "vùng trời"], a: 1}, // 36B
+        {q: "Quân hiệu của QĐND Việt Nam là (...) của Quân đội nhân dân Việt Nam.", options: ["biểu trưng", "biểu tượng", "hình tượng", "hình ảnh"], a: 1}, // 37B
+        {q: "Quân hiệu của QĐND Việt Nam hình tròn, đường kính lớn nhất là", options: ["36 mm", "38 mm", "40 mm", "42 mm"], a: 0}, // 38A
+        {q: "Hạ sĩ quan Quân đội nhân dân Việt Nam có ba bậc: Hạ sĩ, Trung sĩ,", options: ["Đại sĩ", "Chuẩn sĩ", "Thượng sĩ", "Sĩ quan"], a: 2}, // 39C
+        {q: "Chức năng của Bộ Công an là tham mưu bảo vệ an ninh quốc gia, bảo đảm", options: ["trật tự giao thông", "trật tự, an toàn xã hội", "bí mật nhà nước", "an ninh biên giới"], a: 1}, // 40B
+        {q: "Công an hiệu của Công an nhân dân Việt Nam hình tròn, đường kính", options: ["34 mm", "35 mm", "36 mm", "37 mm"], a: 2}, // 41C
+        {q: "Cành tùng kép bao quanh Công an hiệu có kích thước", options: ["cao 52, rộng 62", "cao 54, rộng 64", "cao 56, rộng 66", "cao 58, rộng 68"], a: 1}, // 42B
+        {q: "Sĩ quan chuyên môn kĩ thuật Công an nhân dân cấp tá có ba bậc: Thiếu tá, Trung tá,", options: ["Đại tá", "Thượng tá", "Đại sĩ", "Chuẩn tá"], a: 1}, // 43B
+        {q: "Phù hiệu Công an nhân dân Việt Nam là (...) quy định để chỉ tổ chức.", options: ["dấu hiệu", "lô-gô", "hình hiệu", "hình ảnh"], a: 0}, // 44A
+        {q: "Quần áo, mũ kê pi của Cảnh sát giao thông Việt Nam có màu", options: ["xanh rêu", "lúa chín vàng", "vàng", "xanh lam"], a: 1}, // 45B
+        {q: "Ngắm bắn là xác định góc và hướng bắn đưa quỹ đạo đường đạn đi qua", options: ["mục tiêu", "bên cạnh", "điểm chạm", "điểm định bắn trúng trên mục tiêu"], a: 3}, // 46D
+        {q: "Đường ngắm cơ bản từ mắt qua chính giữa mép trên khe ngắm đến", options: ["đầu ngắm", "điểm chính giữa mép trên đầu ngắm", "mục tiêu", "trung tâm"], a: 1}, // 47B
+        {q: "Điểm xác định trước để khi ngắm vào đó đạn sẽ trúng mục tiêu gọi là", options: ["điểm ngắm đúng", "điểm ngắm chụm", "điểm ngắm trúng", "điểm ngắm cơ bản"], a: 0}, // 48A
+        {q: "Đường ngắm đúng là đường ngắm cơ bản dóng vào điểm ngắm với điều kiện", options: ["mặt súng thăng bằng", "nòng thẳng", "mắt tinh", "tay chắc"], a: 0}, // 49A
+        {q: "Khi ngắm đúng, mặt súng nghiêng bên phải thì điểm chạm sẽ", options: ["cao phải", "lệch trái", "thấp và lệch phải", "cao trái"], a: 2}, // 50C
+        {q: "Động tác nằm bắn súng AK gồm chuẩn bị bắn, bắn và", options: ["thôi bắn", "đứng dậy", "tháo đạn", "lắp đạn"], a: 0}, // 52A
+        {q: "Khẩu lệnh thực hiện động tác nằm bắn súng tiểu liên AK là", options: ["Nằm bắn", "Nằm chuẩn bị bắn", "Chuẩn bị", "Bắn"], a: 1}, // 53B
+        {q: "Nghe dứt khẩu lệnh chuẩn bị nằm bắn, người bắn thực hiện bao nhiêu cử động?", options: ["2", "3", "4", "5"], a: 1}, // 54B
+        {q: "Ở cử động 1 nằm bắn, xoay gót bàn chân trái hướng theo", options: ["gót phải", "mũi trái", "mũi trái", "mũi bàn chân phải"], a: 3}, // 55D
+        {q: "Khuỷu tay trái hạ xuống cách hướng bàn chân phải khoảng", options: ["10 cm", "15 cm", "20 cm", "25 cm"], a: 1}, // 56B
+        {q: "Lắp đạn nằm bắn, kẹp hộp tiếp đạn vào má phải ốp lót tay bằng", options: ["ngón cái", "ngón áp út và ngón giữa", "ngón út", "ngón trỏ"], a: 1}, // 57B
+        {q: "Gương súng nằm bắn AK phải bảo đảm bằng, chắc, đều,", options: ["bền", "êm", "mạnh", "nhanh"], a: 2}, // 58C (tương ứng đáp án C trong file)
+        {q: "Áp má phải vào báng súng AK với lực", options: ["vừa phải", "thật chặt", "nhẹ nhàng", "mạnh"], a: 0}, // 59A
+        {q: "Khi thực hiện động tác ngắm bắn AK, người bắn có thể", options: ["nheo một mắt hoặc mở cả hai", "nhắm cả hai", "nhìn thẳng", "nhìn nghiêng"], a: 0}, // 60A
+        {q: "Khi bóp cò súng AK, dùng bộ phận nào của ngón trỏ tay phải?", options: ["phần cuối đốt thứ hai", "phần giữa đốt thứ nhất", "phần cuối đốt thứ nhất", "ngón cái"], a: 1}, // 23B (câu bổ sung)
+        {q: "Khi bóp cò cần bảo đảm êm, đều, từ từ, thẳng về sau theo trục", options: ["nòng súng", "thân người", "đường đạn", "bia"], a: 0}, // 61A
+        {q: "Kết quả ngắm chụm xếp loại Giỏi nếu đường kính 3 điểm chấm là", options: ["2 mm", "3 mm", "4 mm", "5 mm"], a: 3}, // 62D
+        {q: "Kết quả ngắm chụm xếp loại Đạt nếu đường kính 3 điểm chấm là", options: ["7 mm", "8 mm", "9 mm", "10 mm"], a: 3}, // 63D
+        {q: "Khung bia nền trắng bia số 4 có kích thước là", options: ["70x70", "75x75", "80x80", "85x85"], a: 1}, // 64B
+        {q: "Cự li bắn bia mục tiêu số 4 là bao nhiêu?", options: ["150 m", "130 m", "120 m", "100 m"], a: 3}, // 65D
+        {q: "Xếp loại Không đạt bia số 4 nếu tổng 3 phát bắn dưới", options: ["15 điểm", "16 điểm", "17 điểm", "18 điểm"], a: 0}, // 66A
         {q: "CÂU 60: Tác GIẢ của Web này là người thích bánh mì Pita đúng hay sai?", options: ["Đúng", "Sai"], a: 0}
     ];
 
-    let qs = [], cur = 0, score = 0, user = "", choice = null, left = 45*60, timer;
-    const G_SCRIPT = "DÁN_LINK_GOOGLE_SCRIPT_CỦA_BẠN_VÀO_ĐÂY";
+    let qs = [], cur = 0, score = 0, user = "", pitaStatus = null, left = 45*60, timer;
+    const G_SCRIPT = "DÁN_LINK_WEB_APP_URL_MỚI_CỦA_BẠN_VÀO_ĐÂY";
 
     function setChoice(c) {
-        choice = c;
-        document.getElementById('cy').className = c ? 'btn-c active' : 'btn-c';
-        document.getElementById('cn').className = !c ? 'btn-c active' : 'btn-c';
+        pitaStatus = c;
+        document.getElementById('cy').className = c ? 'choice-btn active' : 'choice-btn';
+        document.getElementById('cn').className = !c ? 'choice-btn active' : 'choice-btn';
     }
 
-    // Fix lỗi dán link YouTube thông minh
-    function getID(url) {
+    function extractYTID(url) {
         let id = '';
         url = url.replace(/(>|<)/gi,'').split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/);
-        if(url[2] !== undefined) {
-            id = url[2].split(/[^0-9a-z_\-]/i);
-            id = id[0];
-        } else { id = url; }
+        if(url[2] !== undefined) { id = url[2].split(/[^0-9a-z_\-]/i)[0]; } else { id = url; }
         return id;
     }
 
-    function start() {
+    function startQuiz() {
         user = document.getElementById('name').value.trim();
-        if(!user || choice === null) return alert("Nhập tên và chọn Pita nha!");
+        if(!user || pitaStatus === null) return alert("Vui lòng nhập tên và chọn đáp án về Bánh Mì Pita nhé!");
         
         let url = document.getElementById('yt').value.trim();
         if(url) {
-            let vid = getID(url);
+            let vid = extractYTID(url);
             if(vid) {
-                document.getElementById('yt-frame').style.display = 'block';
-                document.getElementById('yt-frame').innerHTML = `<iframe width="100%" height="80" src="https://www.youtube.com/embed/${vid}?autoplay=1" frameborder="0" allow="autoplay"></iframe>`;
+                document.getElementById('yt-area').style.display = 'block';
+                document.getElementById('yt-area').innerHTML = `<iframe width="100%" height="80" src="https://www.youtube.com/embed/${vid}?autoplay=1" frameborder="0" allow="autoplay"></iframe>`;
             }
         }
-
-        qs = [...bank].sort(() => Math.random() - 0.5);
+        
+        // Xáo trộn 59 câu, giữ câu 60 cuối cùng
+        let first59 = bank.slice(0, 59).sort(() => Math.random() - 0.5);
+        qs = [...first59, bank[59]];
+        
         document.getElementById('start-box').style.display = 'none';
         document.getElementById('quiz-box').style.display = 'block';
         document.getElementById('u-tag').innerText = "Thí sinh: " + user;
-
+        
         timer = setInterval(() => {
             let m = Math.floor(left/60), s = left%60;
             document.getElementById('timer').innerText = `${m}:${s<10?'0'+s:s}`;
-            if(left-- <= 0) end();
+            if(left-- <= 0) endQuiz();
         }, 1000);
-        show();
+        showQ();
     }
 
-    function show() {
+    function showQ() {
         let item = qs[cur];
-        document.getElementById('pi').style.width = ((cur+1)/qs.length*100) + "%";
+        document.getElementById('pb').style.width = ((cur+1)/qs.length*100) + "%";
         document.getElementById('next').style.display = 'none';
-        document.getElementById('q-area').innerHTML = `
-            <div class="q-text">${cur+1}. ${item.q}</div>
-            <div class="opts">
-                ${item.options.map((o, i) => `<div class="opt" onclick="check(${i}, this)">${String.fromCharCode(65+i)}. ${o}</div>`).join('')}
-            </div>
-        `;
+        document.getElementById('q-area').innerHTML = `<div class="q-text">${cur+1}. ${item.q}</div><div class="opts">${item.options.map((o, i) => `<div class="opt" onclick="checkAnswer(${i}, this)">${String.fromCharCode(65+i)}. ${o}</div>`).join('')}</div>`;
     }
 
-    function check(i, el) {
+    function checkAnswer(i, el) {
         let item = qs[cur];
         document.querySelectorAll('.opt').forEach(o => o.style.pointerEvents = 'none');
         if(i === item.a) { el.classList.add('correct'); score++; }
@@ -222,33 +251,26 @@
         document.getElementById('next').style.display = 'block';
     }
 
-    function goNext() {
-        if(++cur < qs.length) show(); else end();
-    }
+    function goNext() { if(++cur < qs.length) showQ(); else endQuiz(); }
 
-    function end() {
+    function endQuiz() {
         clearInterval(timer);
         document.getElementById('quiz-box').style.display = 'none';
         document.getElementById('res-box').style.display = 'block';
         document.getElementById('r-head').innerText = "KẾT QUẢ CỦA " + user.toUpperCase();
         
-        // Tính điểm thang 10
         let finalGrade = (score / qs.length) * 10;
-        document.getElementById('r-score').innerText = finalGrade.toFixed(1);
-        document.getElementById('r-detail').innerText = `Bạn đã đúng ${score}/${qs.length} câu.`;
+        document.getElementById('r-grade').innerText = finalGrade.toFixed(1);
+        document.getElementById('r-detail').innerText = `Bạn đã đúng ${score}/${qs.length} câu ôn tập.`;
         
-        let pitaTxt = document.getElementById('r-pita');
-        if(choice) { pitaTxt.innerText = "🥐 Cảm ơn bạn đã yêu thích Bánh Mì Pita!"; pitaTxt.style.color = "#10b981"; }
-        else { pitaTxt.innerText = "😢 Bánh Mì Pita đang rất buồn vì bạn..."; pitaTxt.style.color = "#ef4444"; }
+        let resPita = document.getElementById('r-pita');
+        if(pitaStatus) { resPita.innerText = "🍃 Cảm ơn bạn rất nhiều vì đã thích Bánh Mì Pita!"; resPita.style.color = "#27ae60"; }
+        else { resPita.innerText = "💧 Người làm đang cảm thấy rất buồn..."; resPita.style.color = "#2980b9"; }
 
-        if(G_SCRIPT !== "https://script.google.com/macros/s/AKfycbwzUN_E1fJRWQ3zPBPQiZ_nc-SsKtWbquMHCgI3-h2hqsPHE2607Ytt_0ObOx4A8HhTaQ/exec") {
-            fetch(G_SCRIPT, {
-                method: "POST", mode: "no-cors",
-                body: JSON.stringify({ name: user, grade: finalGrade.toFixed(1), score: `${score}/${qs.length}`, pita: choice ? "Có" : "Không" })
-            });
+        if(G_SCRIPT !== "https://script.google.com/macros/s/AKfycbx30MaWxZTRg8rHkVq-D5WMghsXQ6Qq5q4S-77FfkjMwyFOiXvsN13hXd4AFooMeFR1kA/exec") {
+            fetch(G_SCRIPT, { method: "POST", mode: "no-cors", body: JSON.stringify({ name: user, grade: finalGrade.toFixed(1), score: `${score}/${qs.length}`, pita: pitaStatus ? "Có" : "Không" }) });
         }
     }
 </script>
 </body>
 </html>
-
