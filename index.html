@@ -241,7 +241,7 @@
         if(choice) { pitaTxt.innerText = "🥐 Cảm ơn bạn đã yêu thích Bánh Mì Pita!"; pitaTxt.style.color = "#10b981"; }
         else { pitaTxt.innerText = "😢 Bánh Mì Pita đang rất buồn vì bạn..."; pitaTxt.style.color = "#ef4444"; }
 
-        if(G_SCRIPT !== "DÁN_LINK_GOOGLE_SCRIPT_CỦA_BẠN_VÀO_ĐÂY") {
+        if(G_SCRIPT !== "https://script.google.com/macros/s/AKfycbwzUN_E1fJRWQ3zPBPQiZ_nc-SsKtWbquMHCgI3-h2hqsPHE2607Ytt_0ObOx4A8HhTaQ/exec") {
             fetch(G_SCRIPT, {
                 method: "POST", mode: "no-cors",
                 body: JSON.stringify({ name: user, grade: finalGrade.toFixed(1), score: `${score}/${qs.length}`, pita: choice ? "Có" : "Không" })
@@ -251,3 +251,4 @@
 </script>
 </body>
 </html>
+
