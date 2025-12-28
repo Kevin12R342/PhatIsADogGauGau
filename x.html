@@ -3,44 +3,80 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <meta name="theme-color" content="#0f0f1a">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Ôn tập Tin học 11/12</title>
+    <title>Ôn tập Tin học Pro - Ultimate Edition</title>
     
-    <!-- Tailwind CSS -->
+    <!-- Core Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- React & ReactDOM (UMD) -->
+    <!-- React & ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     
-    <!-- Babel Standalone (để chạy JSX/TSX trực tiếp trên trình duyệt) -->
+    <!-- Babel for JSX/TSX transformation in browser -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
+    
+    <!-- Icons & Effects -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-      body { font-family: 'Be Vietnam Pro', sans-serif; -webkit-tap-highlight-color: transparent; }
-      
-      /* Global Scrollbar */
-      ::-webkit-scrollbar { width: 8px; }
-      ::-webkit-scrollbar-track { background: #16162b; }
-      ::-webkit-scrollbar-thumb { background: #33334d; border-radius: 4px; }
-      ::-webkit-scrollbar-thumb:hover { background: #4d4d66; }
-      
-      /* Custom Scrollbar cho danh sách câu hỏi */
-      .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-      .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-      .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
-      
-      /* Animation */
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
+      :root {
+        --glass-bg: rgba(15, 23, 42, 0.7);
+        --glass-border: rgba(255, 255, 255, 0.08);
+        --primary-glow: rgba(6, 182, 212, 0.5);
+        --secondary-glow: rgba(168, 85, 247, 0.5);
       }
-      .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+      
+      body { 
+        font-family: 'Outfit', sans-serif; 
+        background-color: #020617; /* Slate 950 */
+        background-image: 
+            radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.15) 0px, transparent 50%),
+            radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.15) 0px, transparent 50%),
+            radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
+        background-attachment: fixed;
+        color: #e2e8f0;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      h1, h2, h3, .font-display { font-family: 'Space Grotesk', sans-serif; }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar { width: 6px; height: 6px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+      ::-webkit-scrollbar-thumb:hover { background: #475569; }
+      
+      /* Animations */
+      .animate-enter { animation: enter 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+      @keyframes enter { from { opacity: 0; transform: translateY(10px) scale(0.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
+      .animate-fade-in { animation: enter 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+
+      /* Glass Effect */
+      .glass {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
+      }
+
+      .glass-card {
+        background: rgba(30, 41, 59, 0.4);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.3s ease;
+      }
+
+      .glass-card:hover {
+        background: rgba(30, 41, 59, 0.6);
+        border-color: rgba(255, 255, 255, 0.1);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
+      }
     </style>
 <script type="importmap">
 {
@@ -52,16 +88,65 @@
 }
 </script>
 </head>
-<body class="bg-[#050510] text-white min-h-screen">
+<body>
     <div id="root"></div>
 
     <script type="text/babel" data-presets="typescript,react">
         const { useState, useEffect, useMemo, useRef } = React;
 
         // ==========================================
-        // 1. DATA (CONSTANTS)
+        // 1. TYPES
         // ==========================================
-        const QUESTION_BANK = [
+        type QuestionType = 'mcq' | 'tf4';
+
+        interface Question {
+          id: string;
+          type: QuestionType;
+          theme: string;
+          lesson: string;
+          q: string;
+          options?: string[];
+          statements?: string[];
+          a: number | boolean[];
+          explain?: string;
+          source?: string;
+          a_conf?: number;
+        }
+
+        interface QuizState {
+          mode: 'exam' | 'practice' | 'full' | null;
+          userName: string;
+          questions: Question[];
+          currentIndex: number;
+          answers: Map<string, any>;
+          revealed: Set<string>;
+          isFinished: boolean;
+          score: number;
+          timeRemaining: number;
+          startTime: number;
+        }
+
+        interface HistoryRecord {
+          id: string;
+          timestamp: number;
+          mode: string;
+          score: number;
+          totalQuestions: number;
+          userName: string;
+        }
+
+        interface StartOptions {
+          theme: string;
+          lesson: string;
+          num: number;
+          includeTF4: boolean;
+          name: string;
+        }
+
+        // ==========================================
+        // 2. DATA (CONSTANTS)
+        // ==========================================
+        const QUESTION_BANK: Question[] = [
   {
     "type": "mcq",
     "theme": "1. Ứng dụng tin học",
@@ -3592,508 +3677,667 @@
 ];
 
         // ==========================================
-        // 2. HELPER FUNCTIONS
+        // 3. SERVICES
         // ==========================================
-        const shuffle = (array) => {
-          const newArray = [...array];
-          for (let i = newArray.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+        const STORAGE_KEY = 'EXAM_HISTORY_V1';
+
+        const getHistory = () => {
+          try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            return raw ? JSON.parse(raw) : [];
+          } catch (error) {
+            console.error("Failed to load history", error);
+            return [];
           }
-          return newArray;
         };
 
-        const buildExamSet = (allQuestions) => {
-          const t1 = allQuestions.filter(q => q.theme.startsWith("1.") && q.type === "mcq");
-          const t2 = allQuestions.filter(q => q.theme.startsWith("2.") && q.type === "mcq");
-          const t3 = allQuestions.filter(q => q.theme.startsWith("3.") && q.type === "mcq");
-          const t4mcq = allQuestions.filter(q => q.theme.startsWith("4.") && q.type === "mcq");
-          const tf4Key = allQuestions.filter(q => q.type === "tf4" && Array.isArray(q.a));
+        const saveHistory = (record) => {
+          try {
+            const current = getHistory();
+            const updated = [record, ...current].slice(0, 20);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+          } catch (error) {
+            console.error("Failed to save history", error);
+          }
+        };
 
-          const pick = (arr, k) => shuffle(arr).slice(0, Math.min(k, arr.length));
-
-          return shuffle([
-            ...pick(t1, 2),
-            ...pick(t2, 3),
-            ...pick(t3, 2),
-            ...pick(t4mcq, 19),
-            ...pick(tf4Key, 4),
-          ]);
+        const clearHistory = () => {
+            localStorage.removeItem(STORAGE_KEY);
         };
 
         // ==========================================
-        // 3. COMPONENTS
+        // 4. COMPONENTS
         // ==========================================
         
-        const StartScreen = ({ onStart, hasSavedData, onContinue }) => {
-          const themes = useMemo(() => Array.from(new Set(QUESTION_BANK.map(q => q.theme))).sort(), []);
-          const [selectedTheme, setSelectedTheme] = useState("ALL");
-          const [selectedLesson, setSelectedLesson] = useState("ALL");
-          const [numQuestions, setNumQuestions] = useState(30);
-          const [includeTF4, setIncludeTF4] = useState(true);
-          const [name, setName] = useState("");
-          const [error, setError] = useState("");
+        // --- TheoryReview Component ---
+        const TheoryReview = ({ onBack }) => {
+            const [selectedLesson, setSelectedLesson] = useState("ALL");
+            
+            const lessons = useMemo(() => {
+                return ["ALL", ...Array.from(new Set(QUESTION_BANK.map(q => q.lesson))).sort()];
+            }, []);
+            
+            const filteredQuestions = useMemo(() => {
+                if (selectedLesson === "ALL") return QUESTION_BANK;
+                return QUESTION_BANK.filter(q => q.lesson === selectedLesson);
+            }, [selectedLesson]);
 
-          const lessons = useMemo(() => {
-            return Array.from(new Set(
-              QUESTION_BANK
-                .filter(q => selectedTheme === "ALL" ? true : q.theme === selectedTheme)
-                .map(q => q.lesson)
-            )).sort();
-          }, [selectedTheme]);
-
-          const validateAndStart = (mode) => {
-              if (!name.trim()) {
-                  setError("Vui lòng nhập họ tên thí sinh để bắt đầu!");
-                  return;
-              }
-              setError("");
-              
-              if (mode === 'practice') {
-                  onStart('practice', { theme: selectedTheme, lesson: selectedLesson, num: numQuestions, includeTF4, name: name });
-              } else {
-                  onStart(mode, { name: name });
-              }
-          };
-
-          return (
-            <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-6">
-              <div className="bg-[#16162ba6] backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-2xl">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 border-b border-white/10 pb-4">
-                  <div>
-                    <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-fuchsia-500">
-                      Ôn tập Tin học 11/12
-                    </h1>
-                    <p className="text-gray-400 text-sm mt-1">
-                      Ngân hàng câu hỏi: <strong className="text-white">{QUESTION_BANK.length}</strong> câu
-                    </p>
-                  </div>
-                  <div className="flex flex-col items-end gap-2">
-                     <div className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-gray-300">
-                        Phiên bản <strong className="text-white">v2.4 (Single File)</strong>
-                     </div>
-                  </div>
-                </div>
-
-                <div className="mb-8">
-                    <label className="block text-sm font-semibold text-gray-300 mb-2">Họ và tên thí sinh <span className="text-red-500">*</span></label>
-                    <input 
-                        type="text" 
-                        value={name}
-                        onChange={(e) => {
-                            setName(e.target.value);
-                            if(e.target.value) setError("");
-                        }}
-                        placeholder="Nhập tên của bạn..."
-                        className={`w-full bg-white/5 border ${error ? 'border-red-500 animate-pulse' : 'border-white/20'} rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 transition-colors text-lg`}
-                    />
-                    {error && <p className="text-red-400 text-sm mt-2 font-medium">⚠️ {error}</p>}
-                </div>
-
-                {hasSavedData && (
-                    <div className="mb-6 p-4 rounded-xl bg-yellow-500/10 border border-yellow-500/30 flex justify-between items-center animate-fade-in">
+            return (
+                <div className="flex flex-col h-[calc(100vh-80px)] animate-enter">
+                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
                         <div>
-                            <h3 className="text-yellow-400 font-bold text-sm">Phát hiện bài làm chưa xong</h3>
-                            <p className="text-gray-400 text-xs">Bạn có muốn tiếp tục bài làm trước đó không?</p>
+                            <button onClick={onBack} className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-2">
+                                <i className="ph-bold ph-arrow-left"></i> Quay lại Dashboard
+                            </button>
+                            <h2 className="text-2xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-500">
+                                Kho Tàng Kiến Thức
+                            </h2>
+                            <p className="text-xs text-slate-500">Chế độ xem nhanh đáp án đúng để ghi nhớ</p>
                         </div>
-                        <button 
-                            onClick={onContinue}
-                            className="px-4 py-2 bg-yellow-500 hover:bg-yellow-400 text-black font-bold rounded-lg text-sm transition-all"
-                        >
-                            Tiếp tục
-                        </button>
-                    </div>
-                )}
 
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div className="space-y-4">
-                    <h2 className="text-lg font-semibold text-white">Chọn chế độ</h2>
-                    <div className="grid grid-cols-1 gap-3">
-                      <button
-                        onClick={() => validateAndStart('exam')}
-                        className="group relative p-4 rounded-xl border border-cyan-500/30 bg-cyan-500/10 hover:bg-cyan-500/20 transition-all text-left active:scale-[0.98]"
-                      >
-                        <div className="font-bold text-cyan-400 mb-1">Thi thử (30 câu)</div>
-                        <div className="text-xs text-gray-400">Ngẫu nhiên theo cấu trúc đề, chấm điểm /10, có đồng hồ đếm ngược.</div>
-                      </button>
-                      <button
-                        onClick={() => validateAndStart('full')}
-                        className="group relative p-4 rounded-xl border border-fuchsia-500/30 bg-fuchsia-500/10 hover:bg-fuchsia-500/20 transition-all text-left active:scale-[0.98]"
-                      >
-                        <div className="font-bold text-fuchsia-400 mb-1">FULL {QUESTION_BANK.length} Câu</div>
-                        <div className="text-xs text-gray-400">Làm toàn bộ ngân hàng câu hỏi, hiện đáp án ngay lập tức.</div>
-                      </button>
+                        <div className="w-full md:w-64">
+                            <select 
+                                value={selectedLesson} 
+                                onChange={(e) => setSelectedLesson(e.target.value)}
+                                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/50"
+                            >
+                                <option value="ALL">📚 Tất cả bài học ({QUESTION_BANK.length} câu)</option>
+                                {lessons.filter(l => l !== "ALL").map(l => (
+                                    <option key={l} value={l}>{l}</option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
-                  </div>
 
-                  <div className="space-y-4 border-t md:border-t-0 md:border-l border-white/10 md:pl-8 pt-4 md:pt-0">
-                    <h2 className="text-lg font-semibold text-white">Luyện tập tùy chỉnh</h2>
-                    <div className="space-y-3">
-                      <div>
-                        <label className="block text-xs text-gray-400 mb-1">Chủ đề</label>
-                        <select
-                          value={selectedTheme}
-                          onChange={(e) => setSelectedTheme(e.target.value)}
-                          className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-cyan-500/50"
-                          style={{ backgroundColor: '#1e1e2e' }}
-                        >
-                          <option value="ALL">Tất cả</option>
-                          {themes.map(t => <option key={t} value={t}>{t}</option>)}
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-xs text-gray-400 mb-1">Bài học</label>
-                        <select
-                          value={selectedLesson}
-                          onChange={(e) => setSelectedLesson(e.target.value)}
-                          className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-cyan-500/50"
-                          style={{ backgroundColor: '#1e1e2e' }}
-                        >
-                          <option value="ALL">Tất cả</option>
-                          {lessons.map(l => <option key={l} value={l}>{l}</option>)}
-                        </select>
-                      </div>
-                      <div className="flex gap-4">
-                        <div className="flex-1">
-                          <label className="block text-xs text-gray-400 mb-1">Số câu</label>
-                          <input
-                            type="number"
-                            min="5"
-                            max={QUESTION_BANK.length}
-                            value={numQuestions}
-                            onChange={(e) => setNumQuestions(Number(e.target.value))}
-                            className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-cyan-500/50"
-                          />
+                    <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar pb-10">
+                        <div className="grid gap-6">
+                            {filteredQuestions.map((q, idx) => (
+                                <div key={q.id} className="glass-card rounded-2xl p-6 border-l-4 border-l-emerald-500 relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                        <i className="ph-duotone ph-book-open-text text-6xl text-emerald-500"></i>
+                                    </div>
+
+                                    <div className="flex gap-2 mb-3 relative z-10">
+                                        <span className="bg-emerald-500/10 text-emerald-400 text-[10px] font-bold px-2 py-1 rounded border border-emerald-500/20 uppercase tracking-wider">
+                                            #{idx + 1} {q.type === 'mcq' ? 'Trắc nghiệm' : 'Đúng/Sai'}
+                                        </span>
+                                        <span className="bg-slate-800 text-slate-400 text-[10px] px-2 py-1 rounded border border-white/5 truncate max-w-[200px]">
+                                            {q.lesson}
+                                        </span>
+                                    </div>
+
+                                    <h3 className="text-lg font-medium text-white mb-4 leading-relaxed relative z-10">{q.q}</h3>
+                                    
+                                    <div className="bg-slate-950/50 rounded-xl p-4 border border-white/5 relative z-10">
+                                        {q.type === 'mcq' && q.options ? (
+                                            <div className="flex items-start gap-3">
+                                                <div className="mt-0.5 bg-emerald-500/20 p-1 rounded-full text-emerald-400">
+                                                    <i className="ph-fill ph-check"></i>
+                                                </div>
+                                                <div>
+                                                    <p className="text-[10px] text-slate-500 uppercase font-bold mb-1">Đáp án chính xác</p>
+                                                    <p className="text-emerald-300 font-semibold text-base">{q.options[q.a]}</p>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="space-y-3">
+                                                <p className="text-[10px] text-slate-500 uppercase font-bold mb-1 flex items-center gap-2"><i className="ph-fill ph-list-checks"></i> Các phát biểu:</p>
+                                                {q.statements?.map((stmt, sIdx) => (
+                                                    <div key={sIdx} className="flex justify-between items-center p-2 rounded bg-slate-900/80 border border-white/5">
+                                                        <span className="text-sm text-slate-300 flex-1 mr-4">{stmt}</span>
+                                                        <span className={`text-[10px] font-bold px-2 py-1 rounded min-w-[50px] text-center ${q.a[sIdx] ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-red-500/10 text-red-400 border border-red-500/20'}`}>
+                                                            {q.a[sIdx] ? 'ĐÚNG' : 'SAI'}
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {q.explain && (
+                                        <div className="mt-4 flex gap-3 text-sm text-blue-200/80 bg-blue-500/5 p-3 rounded-lg border border-blue-500/10 relative z-10">
+                                            <i className="ph-fill ph-lightbulb text-yellow-400 text-lg shrink-0"></i>
+                                            <div><span className="font-bold text-blue-400 block mb-1 text-xs uppercase">Giải thích:</span>{q.explain}</div>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
                         </div>
-                        <div className="flex items-center pt-5">
-                          <label className="flex items-center gap-2 cursor-pointer">
-                            <input
-                              type="checkbox"
-                              checked={includeTF4}
-                              onChange={(e) => setIncludeTF4(e.target.checked)}
-                              className="accent-cyan-400 w-4 h-4"
-                            />
-                            <span className="text-sm text-gray-300">Gồm Đ/S</span>
-                          </label>
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => validateAndStart('practice')}
-                        className="w-full py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 font-semibold text-white shadow-lg shadow-cyan-500/20 hover:scale-[1.02] active:scale-95 transition-all"
-                      >
-                        Bắt đầu luyện
-                      </button>
                     </div>
-                  </div>
                 </div>
-              </div>
-            </div>
-          );
+            );
         };
 
+        // --- QuizScreen Component ---
         const QuizScreen = ({ state, dispatch }) => {
-          const q = state.questions[state.currentIndex];
-          const total = state.questions.length;
-          const currentAnswer = state.answers.get(q.id);
-          const isRevealed = state.revealed.has(q.id);
-          const [showMapMobile, setShowMapMobile] = useState(false);
+            const q = state.questions[state.currentIndex];
+            const total = state.questions.length;
+            const currentAnswer = state.answers.get(q.id);
+            const isRevealed = state.revealed.has(q.id);
+            const [showDrawer, setShowDrawer] = useState(false);
 
-          useEffect(() => {
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-          }, [state.currentIndex]);
+            useEffect(() => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, [state.currentIndex]);
 
-          const handleMCQSelect = (idx) => {
-            if (state.isFinished || (state.mode !== 'exam' && isRevealed)) return;
-            dispatch({ type: 'ANSWER', qId: q.id, answer: idx });
-          };
+            const handleMCQSelect = (idx) => {
+                if (state.isFinished || (state.mode !== 'exam' && isRevealed)) return;
+                dispatch({ type: 'ANSWER', qId: q.id, answer: idx });
+            };
 
-          const handleTFSelect = (idx, val) => {
-            if (state.isFinished || (state.mode !== 'exam' && isRevealed)) return;
-            const current = state.answers.get(q.id) || [null, null, null, null];
-            const next = [...current];
-            next[idx] = val;
-            dispatch({ type: 'ANSWER', qId: q.id, answer: next });
-          };
+            const handleTFSelect = (idx, val) => {
+                if (state.isFinished || (state.mode !== 'exam' && isRevealed)) return;
+                const current = state.answers.get(q.id) || [null, null, null, null];
+                const next = [...current];
+                next[idx] = val;
+                dispatch({ type: 'ANSWER', qId: q.id, answer: next });
+            };
 
-          const handleNext = () => dispatch({ type: 'NEXT' });
-          const handlePrev = () => dispatch({ type: 'PREV' });
-          const handleReveal = () => dispatch({ type: 'REVEAL', qId: q.id });
-          const handleSubmit = () => {
-            if (window.confirm(state.mode === 'practice' ? "Bạn muốn kết thúc luyện tập và xem kết quả?" : "Bạn có chắc chắn muốn nộp bài?")) {
-              dispatch({ type: 'FINISH' });
-              setShowMapMobile(false); 
-            }
-          };
+            const shouldShowResult = state.isFinished || (state.mode !== 'exam' && isRevealed);
 
-          const minutes = Math.floor(state.timeRemaining / 60);
-          const seconds = state.timeRemaining % 60;
-          const timerStr = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            const handleSubmit = () => {
+                const msg = state.mode === 'practice' 
+                    ? "Kết thúc luyện tập và xem kết quả?" 
+                    : "Bạn có chắc chắn muốn nộp bài sớm?";
+                if (window.confirm(msg)) {
+                dispatch({ type: 'FINISH' });
+                }
+            };
 
-          const shouldShowResult = state.isFinished || (state.mode !== 'exam' && isRevealed);
+            useEffect(() => {
+                if (state.isFinished && state.score >= 8) {
+                    if (typeof confetti === 'function') {
+                        confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 }, colors: ['#34d399', '#60a5fa', '#f472b6'] });
+                    }
+                }
+            }, [state.isFinished, state.score]);
 
-          return (
-            <div className="max-w-6xl mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 items-start pb-24 lg:pb-6">
-              <div className="bg-[#16162ba6] backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden shadow-2xl flex flex-col min-h-[50vh]">
-                <div className="p-4 border-b border-white/10 bg-white/5 flex flex-col sm:flex-row justify-between sm:items-center gap-2 sticky top-0 z-10 backdrop-blur-xl">
-                  <div className="flex items-center justify-between w-full sm:w-auto">
-                     <div className="flex items-center gap-2">
-                        <span className="px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-bold whitespace-nowrap">
-                        Câu {state.currentIndex + 1}/{total}
-                        </span>
-                        <span className="hidden sm:inline-block px-3 py-1 rounded-full bg-white/5 border border-white/10 text-gray-400 text-xs">
-                        {q.type === 'mcq' ? 'Trắc nghiệm' : 'Đúng/Sai'}
-                        </span>
-                     </div>
-                     {state.mode === 'exam' && (
-                        <div className={`sm:hidden font-mono font-bold text-sm px-2 py-1 rounded-lg border ${state.timeRemaining < 300 ? 'border-red-500/50 text-red-400 bg-red-500/10' : 'border-white/10 bg-white/5 text-cyan-300'}`}>
-                        {timerStr}
-                        </div>
-                    )}
-                  </div>
-                  
-                  <div className="flex items-center gap-3">
-                     <div className="text-xs text-gray-400 font-medium truncate max-w-[150px] sm:max-w-none flex items-center gap-1">
-                         <span className="opacity-50">Thí sinh:</span> <span className="text-white font-bold">{state.userName}</span>
-                     </div>
-                     {state.mode === 'exam' && (
-                        <div className={`hidden sm:block font-mono font-bold text-lg px-3 py-1 rounded-lg border ${state.timeRemaining < 300 ? 'border-red-500/50 text-red-400 bg-red-500/10' : 'border-white/10 bg-white/5 text-cyan-300'}`}>
-                        ⏱ {timerStr}
-                        </div>
-                    )}
-                  </div>
-                </div>
+            const formatTime = (s) => {
+                const min = Math.floor(s / 60);
+                const sec = s % 60;
+                return `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+            };
 
-                <div className="p-4 md:p-6">
-                  <div className="mb-6 text-base md:text-xl font-medium leading-relaxed whitespace-pre-wrap text-white">
-                    {q.q}
-                  </div>
-
-                  {q.type === 'mcq' && (
-                    <div className="space-y-3">
-                      {q.options?.map((opt, i) => {
-                        let statusClass = "border-white/10 bg-white/5 hover:bg-white/10 active:bg-white/20";
-                        
-                        if (shouldShowResult) {
-                            if (i === q.a) {
-                                statusClass = "border-green-500 bg-green-500/20";
-                            } else if (currentAnswer === i) {
-                                statusClass = "border-red-500 bg-red-500/20";
-                            } else {
-                                statusClass = "border-white/10 bg-white/5 opacity-50";
-                            }
-                        } else {
-                            if (currentAnswer === i) {
-                                statusClass = "border-cyan-500 bg-cyan-500/20 ring-1 ring-cyan-500";
-                            }
-                        }
-
-                        return (
-                          <button
-                            key={i}
-                            onClick={() => handleMCQSelect(i)}
-                            className={`w-full p-3 md:p-4 rounded-xl border text-left transition-all ${statusClass} flex items-start group`}
-                          >
-                            <span className={`flex-shrink-0 w-6 h-6 md:w-8 md:h-8 rounded-full flex items-center justify-center mr-3 text-xs md:text-sm font-bold transition-colors ${currentAnswer === i || (shouldShowResult && i === q.a) ? 'bg-white/20' : 'bg-white/5 group-hover:bg-white/10'}`}>
-                              {String.fromCharCode(65 + i)}
+            return (
+                <div className="max-w-7xl mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 pb-24 lg:pb-6 animate-fade-in">
+                
+                <div className="flex flex-col min-h-[60vh] bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
+                    
+                    <div className="p-4 bg-white/5 border-b border-white/10 flex justify-between items-center sticky top-0 z-10 backdrop-blur-md">
+                        <div className="flex items-center gap-3">
+                            <span className="px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-bold border border-indigo-500/30">
+                                Câu {state.currentIndex + 1}/{total}
                             </span>
-                            <span className="mt-0.5 md:mt-1 text-sm md:text-base text-gray-200">{opt}</span>
-                            
-                            {shouldShowResult && i === q.a && (
-                                <span className="ml-auto text-green-400 font-bold">✓</span>
-                            )}
-                            {shouldShowResult && currentAnswer === i && i !== q.a && (
-                                <span className="ml-auto text-red-400 font-bold">✗</span>
-                            )}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
-
-                  {q.type === 'tf4' && (
-                     <div className="space-y-4">
-                         <div className="grid grid-cols-[1fr_50px_50px] md:grid-cols-[1fr_60px_60px] gap-2 border-b border-white/10 pb-2 mb-2">
-                             <div className="text-xs text-gray-400 uppercase font-bold">Phát biểu</div>
-                             <div className="text-center text-xs text-gray-400 uppercase font-bold">Đúng</div>
-                             <div className="text-center text-xs text-gray-400 uppercase font-bold">Sai</div>
-                         </div>
-                         {q.statements?.map((stmt, i) => {
-                             const userVal = (currentAnswer || [])[i];
-                             const correctVal = q.a[i];
-                             
-                             return (
-                                 <div key={i} className="grid grid-cols-[1fr_50px_50px] md:grid-cols-[1fr_60px_60px] gap-2 items-center py-3 border-b border-white/5 last:border-0">
-                                     <div className="text-sm md:text-base text-gray-200">{stmt}</div>
-                                     
-                                     <button
-                                        onClick={() => handleTFSelect(i, true)}
-                                        className={`h-10 w-full rounded flex items-center justify-center transition-colors ${
-                                            shouldShowResult 
-                                                ? (correctVal === true ? 'bg-green-500/20 text-green-400 border border-green-500/50' : (userVal === true ? 'bg-red-500/20 text-red-400' : 'bg-white/5 opacity-30'))
-                                                : (userVal === true ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/30' : 'bg-white/5 hover:bg-white/10 active:bg-white/20')
-                                        }`}
-                                     >
-                                        Đ
-                                     </button>
-
-                                     <button
-                                        onClick={() => handleTFSelect(i, false)}
-                                        className={`h-10 w-full rounded flex items-center justify-center transition-colors ${
-                                            shouldShowResult
-                                                ? (correctVal === false ? 'bg-green-500/20 text-green-400 border border-green-500/50' : (userVal === false ? 'bg-red-500/20 text-red-400' : 'bg-white/5 opacity-30'))
-                                                : (userVal === false ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/30' : 'bg-white/5 hover:bg-white/10 active:bg-white/20')
-                                        }`}
-                                     >
-                                        S
-                                     </button>
-                                 </div>
-                             )
-                         })}
-                     </div>
-                  )}
-
-                  {shouldShowResult && q.explain && (
-                      <div className="mt-6 p-4 rounded-xl bg-blue-500/10 border border-blue-500/30 text-blue-200 text-sm md:text-base">
-                          <h4 className="font-bold text-xs md:text-sm mb-1 uppercase text-blue-400">Giải thích:</h4>
-                          <p>{q.explain}</p>
-                      </div>
-                  )}
-                </div>
-
-                <div className="p-4 border-t border-white/10 bg-white/5 flex justify-between items-center sticky bottom-0 z-10 backdrop-blur-xl">
-                    <button 
-                        onClick={handlePrev} 
-                        disabled={state.currentIndex === 0}
-                        className="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all text-xs md:text-sm font-medium"
-                    >
-                        Quay lại
-                    </button>
-                    
-                    <div className="flex gap-2">
-                        {!state.isFinished && state.mode !== 'exam' && !isRevealed && (
-                            <button 
-                                onClick={handleReveal}
-                                className="px-3 md:px-4 py-2 rounded-lg bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20 border border-yellow-500/30 transition-all text-xs md:text-sm font-bold whitespace-nowrap"
-                            >
-                                Đáp án
-                            </button>
-                        )}
+                            <span className="px-3 py-1 rounded-full bg-slate-700 text-slate-300 text-xs font-bold border border-white/10">
+                                {q.type === 'mcq' ? 'Trắc nghiệm' : 'Đúng/Sai'}
+                            </span>
+                        </div>
                         
-                        {state.currentIndex < total - 1 ? (
-                            <button 
-                                onClick={handleNext}
-                                className="px-6 py-2 rounded-lg bg-cyan-600 text-white hover:bg-cyan-500 transition-all text-sm font-bold shadow-lg shadow-cyan-500/20 active:scale-95"
-                            >
-                                Tiếp
-                            </button>
-                        ) : (
-                            <button 
-                                onClick={handleSubmit}
-                                disabled={state.isFinished}
-                                className="px-6 py-2 rounded-lg bg-fuchsia-600 text-white hover:bg-fuchsia-500 transition-all text-sm font-bold shadow-lg shadow-fuchsia-500/20 disabled:opacity-50 active:scale-95"
-                            >
-                                {state.isFinished ? "Xong" : "Nộp bài"}
-                            </button>
+                        {state.mode === 'exam' && (
+                            <div className={`font-mono font-bold text-lg px-3 py-1 rounded-lg border flex items-center gap-2 ${state.timeRemaining < 300 ? 'border-red-500/50 text-red-400 bg-red-500/10 animate-pulse' : 'border-slate-700 bg-slate-800 text-cyan-300'}`}>
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                {formatTime(state.timeRemaining)}
+                            </div>
                         )}
                     </div>
-                </div>
-              </div>
 
-              <div className={`fixed inset-x-0 bottom-0 top-20 z-50 lg:z-auto lg:static lg:block transition-transform duration-300 ${showMapMobile ? 'translate-y-0' : 'translate-y-[110%] lg:translate-y-0'}`}>
-                <div className="h-full flex flex-col bg-[#16162b] lg:bg-[#16162ba6] lg:backdrop-blur-md border-t lg:border border-white/10 lg:rounded-2xl shadow-2xl lg:h-[calc(100vh-100px)]">
-                    
-                    <div className="lg:hidden flex items-center justify-between p-4 border-b border-white/10 bg-[#16162b]">
-                        <h3 className="text-sm font-bold text-gray-200">Danh sách câu hỏi</h3>
-                        <button onClick={() => setShowMapMobile(false)} className="text-gray-400 hover:text-white p-1">
-                            ✕
-                        </button>
+                    <div className="flex-1 p-6 md:p-8">
+                        <h3 className="text-lg md:text-xl font-medium leading-relaxed text-white mb-8 whitespace-pre-wrap">
+                            {q.q}
+                        </h3>
+
+                        {q.type === 'mcq' && q.options && (
+                            <div className="space-y-3">
+                                {q.options.map((opt, i) => {
+                                    let status = "border-slate-700 bg-slate-800/50 hover:bg-slate-700/50";
+                                    if (shouldShowResult) {
+                                        if (i === q.a) status = "border-green-500 bg-green-500/20";
+                                        else if (currentAnswer === i) status = "border-red-500 bg-red-500/20";
+                                        else status = "border-slate-800 bg-slate-800/20 opacity-50";
+                                    } else if (currentAnswer === i) {
+                                        status = "border-cyan-500 bg-cyan-500/20 shadow-[0_0_15px_rgba(6,182,212,0.15)]";
+                                    }
+
+                                    return (
+                                        <button
+                                            key={i}
+                                            onClick={() => handleMCQSelect(i)}
+                                            className={`w-full p-4 rounded-xl border text-left transition-all flex items-start group ${status}`}
+                                        >
+                                            <span className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-4 text-sm font-bold transition-colors ${currentAnswer === i || (shouldShowResult && i === q.a) ? 'bg-white/20 text-white' : 'bg-white/5 text-slate-400'}`}>
+                                                {String.fromCharCode(65 + i)}
+                                            </span>
+                                            <span className="mt-1 text-slate-200">{opt}</span>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        )}
+
+                        {q.type === 'tf4' && q.statements && (
+                            <div className="space-y-4">
+                                <div className="grid grid-cols-[1fr_60px_60px] gap-4 border-b border-white/10 pb-2 mb-4">
+                                    <div className="text-xs text-slate-500 font-bold uppercase tracking-wider">Phát biểu</div>
+                                    <div className="text-center text-xs text-slate-500 font-bold uppercase">Đúng</div>
+                                    <div className="text-center text-xs text-slate-500 font-bold uppercase">Sai</div>
+                                </div>
+                                {q.statements.map((stmt, i) => {
+                                    const userVal = (currentAnswer || [])[i];
+                                    const correctVal = q.a[i];
+
+                                    const getBtnClass = (isTrueBtn) => {
+                                        const isSelected = userVal === isTrueBtn;
+                                        const isCorrect = correctVal === isTrueBtn;
+                                        
+                                        if (shouldShowResult) {
+                                            if (isCorrect) return "bg-green-500/20 text-green-400 border border-green-500/50";
+                                            if (isSelected) return "bg-red-500/20 text-red-400 border border-red-500/50";
+                                            return "bg-slate-800/50 opacity-20";
+                                        }
+                                        if (isSelected) return "bg-cyan-600 text-white shadow-lg";
+                                        return "bg-slate-800 hover:bg-slate-700 text-slate-400";
+                                    };
+
+                                    return (
+                                        <div key={i} className="grid grid-cols-[1fr_60px_60px] gap-4 items-center py-2 border-b border-white/5 last:border-0">
+                                            <div className="text-sm md:text-base text-slate-300">{stmt}</div>
+                                            <button onClick={() => handleTFSelect(i, true)} className={`h-10 rounded-lg font-bold transition-all ${getBtnClass(true)}`}>Đ</button>
+                                            <button onClick={() => handleTFSelect(i, false)} className={`h-10 rounded-lg font-bold transition-all ${getBtnClass(false)}`}>S</button>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        )}
+
+                        {shouldShowResult && q.explain && (
+                            <div className="mt-8 p-6 rounded-xl bg-blue-900/20 border border-blue-500/30 animate-fade-in">
+                                <h4 className="text-blue-400 font-bold text-sm uppercase mb-2 flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                                    </svg>
+                                    Giải thích chi tiết
+                                </h4>
+                                <p className="text-blue-100/90 leading-relaxed">{q.explain}</p>
+                            </div>
+                        )}
                     </div>
 
-                    {state.isFinished && (
-                        <div className="p-6 text-center border-b border-white/10">
-                            <div className="text-gray-400 text-sm mb-1">Điểm số của bạn</div>
-                            <div className="text-4xl font-black bg-clip-text text-transparent bg-gradient-to-br from-green-400 to-emerald-600">
-                                {state.score.toFixed(1)} / 10
+                    <div className="p-4 bg-white/5 border-t border-white/10 flex justify-between items-center backdrop-blur-md">
+                        <button 
+                            onClick={() => dispatch({ type: 'PREV' })}
+                            disabled={state.currentIndex === 0}
+                            className="px-5 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 disabled:opacity-30 transition-all font-medium text-sm flex items-center gap-2"
+                        >
+                            ← Quay lại
+                        </button>
+
+                        <div className="flex gap-3">
+                            {!state.isFinished && state.mode !== 'exam' && !isRevealed && (
+                                <button onClick={() => dispatch({ type: 'REVEAL', qId: q.id })} className="px-4 py-2 rounded-xl border border-yellow-500/30 text-yellow-500 hover:bg-yellow-500/10 font-bold text-sm">
+                                    Hiện đáp án
+                                </button>
+                            )}
+                            {state.currentIndex < total - 1 ? (
+                                <button 
+                                    onClick={() => dispatch({ type: 'NEXT' })}
+                                    className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold text-sm shadow-lg shadow-cyan-500/20 transition-all active:scale-95 flex items-center gap-2"
+                                >
+                                    Câu tiếp →
+                                </button>
+                            ) : (
+                                <button 
+                                    onClick={handleSubmit}
+                                    disabled={state.isFinished}
+                                    className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-fuchsia-600 to-pink-600 hover:from-fuchsia-500 hover:to-pink-500 text-white font-bold text-sm shadow-lg shadow-fuchsia-500/20 transition-all active:scale-95 disabled:opacity-50"
+                                >
+                                    {state.isFinished ? "Đã nộp bài" : "Nộp bài"}
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                <div className={`fixed inset-0 z-40 bg-slate-900/95 backdrop-blur-xl lg:static lg:bg-transparent lg:backdrop-blur-none transition-transform duration-300 ${showDrawer ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}`}>
+                    <div className="h-full flex flex-col lg:h-[calc(100vh-100px)] lg:bg-slate-900/80 lg:backdrop-blur-xl lg:border lg:border-white/10 lg:rounded-2xl">
+                        
+                        <div className="lg:hidden p-4 border-b border-white/10 flex justify-between items-center">
+                            <h3 className="font-bold text-white">Danh sách câu hỏi</h3>
+                            <button onClick={() => setShowDrawer(false)} className="p-2 text-slate-400 hover:text-white">✕</button>
+                        </div>
+
+                        {state.isFinished && (
+                            <div className="p-6 text-center border-b border-white/10 bg-gradient-to-b from-green-500/10 to-transparent">
+                                <p className="text-slate-400 text-xs font-bold uppercase mb-2">Kết quả của bạn</p>
+                                <div className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-b from-green-300 to-green-600 mb-2">
+                                    {state.score.toFixed(1)}
+                                </div>
+                                <span className="text-xs px-2 py-1 rounded bg-white/10 text-slate-300">Thang điểm 10</span>
+                            </div>
+                        )}
+
+                        <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+                            {!state.isFinished && <div className="text-xs text-slate-500 font-bold uppercase mb-3 px-1">Điều hướng</div>}
+                            <div className="grid grid-cols-5 gap-2">
+                                {state.questions.map((qItem, idx) => {
+                                    const isCurr = idx === state.currentIndex;
+                                    const ans = state.answers.get(qItem.id);
+                                    const hasAns = ans !== undefined && (Array.isArray(ans) ? ans.some(x => x !== null) : true);
+                                    
+                                    let base = "aspect-square rounded-lg flex items-center justify-center text-xs font-bold transition-all border";
+                                    let style = "border-slate-800 bg-slate-800/50 text-slate-500 hover:bg-slate-700";
+
+                                    if (state.isFinished) {
+                                        const isCorrect = qItem.type === 'mcq' 
+                                            ? (ans === qItem.a)
+                                            : (Array.isArray(qItem.a) && Array.isArray(ans) && qItem.a.every((v, i) => v === ans[i]));
+                                        
+                                        style = isCorrect 
+                                            ? "border-green-600 bg-green-500/20 text-green-400" 
+                                            : "border-red-600 bg-red-500/20 text-red-400";
+                                    } else {
+                                        if (isCurr) style = "border-cyan-500 bg-cyan-500 text-slate-900 shadow-lg shadow-cyan-500/50 scale-110 z-10";
+                                        else if (hasAns) style = "border-blue-500/50 bg-blue-500/20 text-blue-300";
+                                    }
+
+                                    return (
+                                        <button
+                                            key={idx}
+                                            onClick={() => { dispatch({ type: 'GOTO', index: idx }); setShowDrawer(false); }}
+                                            className={`${base} ${style}`}
+                                        >
+                                            {idx + 1}
+                                        </button>
+                                    )
+                                })}
+                            </div>
+                        </div>
+
+                        <div className="p-4 border-t border-white/10 space-y-3">
+                            {!state.isFinished && (
+                                <button onClick={handleSubmit} className="w-full py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-red-500/10 hover:border-red-500/50 text-red-400 font-bold text-sm transition-all">
+                                    {state.mode === 'practice' ? "Kết thúc" : "Nộp bài sớm"}
+                                </button>
+                            )}
+                            <button onClick={() => { if(confirm("Thoát về màn hình chính?")) dispatch({ type: 'HOME' }); }} className="w-full py-3 rounded-xl hover:bg-white/5 text-slate-400 hover:text-white text-sm transition-all font-medium">
+                                Thoát ra
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <button onClick={() => setShowDrawer(true)} className="fixed bottom-6 right-6 lg:hidden w-14 h-14 bg-cyan-600 text-white rounded-full shadow-2xl flex items-center justify-center z-30 border-2 border-white/20 active:scale-90 transition-transform">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                </button>
+
+                </div>
+            );
+        };
+
+        // --- StartScreen Component ---
+        const getRank = (avgScore) => {
+            if (isNaN(avgScore) || avgScore === 0) return { title: "Tân binh", color: "text-slate-400", bg: "bg-slate-500/20", icon: "ph-egg" };
+            if (avgScore >= 9.0) return { title: "Giáo sư", color: "text-yellow-400", bg: "bg-yellow-500/20", icon: "ph-crown" };
+            if (avgScore >= 8.0) return { title: "Chuyên gia", color: "text-purple-400", bg: "bg-purple-500/20", icon: "ph-graduation-cap" };
+            if (avgScore >= 6.5) return { title: "Học khá", color: "text-cyan-400", bg: "bg-cyan-500/20", icon: "ph-book-open" };
+            if (avgScore >= 5.0) return { title: "Tập sự", color: "text-green-400", bg: "bg-green-500/20", icon: "ph-pencil" };
+            return { title: "Cần cố gắng", color: "text-red-400", bg: "bg-red-500/20", icon: "ph-warning" };
+        };
+
+        const HistoryChart = ({ history }) => {
+            if (!history || history.length === 0) return null;
+            const data = [...history].slice(0, 10).reverse();
+            
+            return (
+                <div className="h-32 flex items-end justify-between gap-1 mt-4 px-2 relative">
+                    <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-20">
+                        <div className="border-t border-dashed border-white w-full"></div>
+                        <div className="border-t border-dashed border-white w-full"></div>
+                        <div className="border-t border-dashed border-white w-full"></div>
+                    </div>
+                    
+                    {data.map((rec, i) => (
+                        <div key={i} className="flex-1 flex flex-col items-center group relative z-10">
+                            <div className="relative w-full flex justify-center h-full items-end">
+                                <div 
+                                    className={`w-full max-w-[8px] md:max-w-[16px] rounded-t-sm transition-all duration-500 hover:opacity-100 opacity-80 ${rec.score >= 8 ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]' : rec.score >= 5 ? 'bg-blue-500' : 'bg-red-500'}`}
+                                    style={{ height: `${(rec.score / 10) * 100}%` }}
+                                ></div>
+                                
+                                <div className="absolute bottom-full mb-2 opacity-0 group-hover:opacity-100 transition-opacity bg-slate-800 text-white text-[10px] px-2 py-1 rounded border border-white/10 whitespace-nowrap z-20 pointer-events-none">
+                                    {rec.score.toFixed(1)}đ - {rec.mode === 'exam' ? 'Thi' : 'Luyện'}
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            );
+        };
+
+        const StartScreen = ({ onStart, onOpenTheory, hasSavedData, onContinue }) => {
+            const [themes] = useState(() => Array.from(new Set(QUESTION_BANK.map(q => q.theme))).sort());
+            const [selectedTheme, setSelectedTheme] = useState("ALL");
+            const [numQuestions, setNumQuestions] = useState(30);
+            const [includeTF4, setIncludeTF4] = useState(true);
+            const [name, setName] = useState(localStorage.getItem('LAST_USER_NAME') || "");
+            const [error, setError] = useState("");
+            const [history, setHistory] = useState([]);
+
+            useEffect(() => {
+                setHistory(getHistory());
+            }, []);
+
+            const handleStart = (mode) => {
+                if (!name.trim()) { setError("Vui lòng nhập tên để vinh danh!"); return; }
+                localStorage.setItem('LAST_USER_NAME', name);
+                setError("");
+                const opts = { theme: selectedTheme, lesson: "ALL", num: numQuestions, includeTF4, name };
+                onStart(mode, opts);
+            };
+
+            const avgScore = history.length > 0 ? (history.reduce((a,b)=>a+b.score,0)/history.length) : 0;
+            const rank = getRank(avgScore);
+
+            return (
+                <div className="max-w-6xl mx-auto p-4 animate-enter pb-10">
+                    
+                    <div className="glass rounded-3xl p-6 md:p-8 mb-8 relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-cyan-500/20 to-purple-500/20 blur-3xl -z-10 rounded-full transform translate-x-1/2 -translate-y-1/2"></div>
+                        
+                        <div className="flex flex-col md:flex-row gap-8">
+                            <div className="flex-1">
+                                <div className="flex items-center gap-5 mb-6">
+                                    <div className={`w-20 h-20 rounded-2xl ${rank.bg} border border-white/10 flex items-center justify-center text-4xl shadow-xl ${rank.color}`}>
+                                        <i className={`ph-fill ${rank.icon}`}></i>
+                                    </div>
+                                    <div>
+                                        <h2 className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Hồ sơ năng lực</h2>
+                                        <h1 className="text-3xl md:text-4xl font-display font-bold text-white mb-1">{name || "Khách"}</h1>
+                                        <div className="flex items-center gap-2">
+                                            <span className={`text-xs font-bold px-2 py-0.5 rounded border border-white/5 ${rank.color} bg-black/20`}>{rank.title}</span>
+                                            <span className="text-xs text-slate-500">• TB: {avgScore.toFixed(1)} điểm</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="glass-card rounded-xl p-3 border-l-2 border-l-blue-500">
+                                        <div className="text-2xl font-bold text-white">{history.length}</div>
+                                        <div className="text-[10px] text-slate-400 uppercase font-bold">Lần thi</div>
+                                    </div>
+                                    <div className="glass-card rounded-xl p-3 border-l-2 border-l-fuchsia-500">
+                                        <div className="text-2xl font-bold text-white">{QUESTION_BANK.length}</div>
+                                        <div className="text-[10px] text-slate-400 uppercase font-bold">Câu hỏi</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="md:w-1/2 bg-slate-900/30 rounded-2xl p-4 border border-white/5">
+                                <div className="flex justify-between items-center mb-2">
+                                    <p className="text-[10px] text-slate-400 uppercase font-bold">Phong độ gần đây</p>
+                                    <i className="ph-bold ph-chart-bar text-slate-500"></i>
+                                </div>
+                                {history.length > 0 ? <HistoryChart history={history} /> : (
+                                    <div className="h-32 flex items-center justify-center text-xs text-slate-600 italic">Chưa có dữ liệu thi</div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="grid md:grid-cols-12 gap-6">
+                        
+                        <div className="md:col-span-7 space-y-6">
+                            <div className="glass rounded-2xl p-6 md:p-8">
+                                <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                                    <i className="ph-duotone ph-rocket-launch text-cyan-400"></i> Bắt đầu
+                                </h3>
+                                
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="text-[10px] text-slate-400 uppercase font-bold mb-1.5 block">Tên thí sinh</label>
+                                        <div className="relative group">
+                                            <i className="ph ph-user absolute left-3 top-3 text-slate-500 group-focus-within:text-cyan-400 transition-colors"></i>
+                                            <input 
+                                                type="text" 
+                                                value={name}
+                                                onChange={(e) => {setName(e.target.value); setError("")}}
+                                                className={`w-full bg-slate-900/50 border ${error ? 'border-red-500' : 'border-slate-700'} rounded-xl py-2.5 pl-10 pr-4 text-white focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500 transition-all text-sm`}
+                                                placeholder="Nhập tên của bạn..."
+                                            />
+                                        </div>
+                                        {error && <p className="text-red-400 text-xs mt-1 font-bold animate-pulse">{error}</p>}
+                                    </div>
+
+                                    {hasSavedData && (
+                                        <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 flex justify-between items-center animate-pulse">
+                                            <div className="text-xs text-amber-200 font-bold"><i className="ph-fill ph-warning mr-1"></i> Có bài làm chưa xong</div>
+                                            <button onClick={onContinue} className="px-3 py-1 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold rounded-lg text-xs shadow-lg transition-all">Tiếp tục</button>
+                                        </div>
+                                    )}
+
+                                    <div className="grid grid-cols-2 gap-3 pt-2">
+                                        <button onClick={() => handleStart('exam')} className="group relative p-4 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 hover:from-blue-500 hover:to-indigo-600 border border-blue-400/20 text-left transition-all hover:scale-[1.02] shadow-lg shadow-blue-900/50">
+                                            <div className="absolute top-2 right-2 opacity-10 group-hover:opacity-30 transition-opacity"><i className="ph-fill ph-timer text-3xl"></i></div>
+                                            <div className="font-bold text-white text-lg">Thi thử 45'</div>
+                                            <div className="text-[10px] text-blue-200 opacity-80 mt-1">30 câu ngẫu nhiên • Chấm điểm</div>
+                                        </button>
+                                        <button onClick={() => handleStart('full')} className="group relative p-4 rounded-xl bg-gradient-to-br from-fuchsia-600 to-pink-700 hover:from-fuchsia-500 hover:to-pink-600 border border-fuchsia-400/20 text-left transition-all hover:scale-[1.02] shadow-lg shadow-fuchsia-900/50">
+                                            <div className="absolute top-2 right-2 opacity-10 group-hover:opacity-30 transition-opacity"><i className="ph-fill ph-infinity text-3xl"></i></div>
+                                            <div className="font-bold text-white text-lg">Marathon</div>
+                                            <div className="text-[10px] text-fuchsia-200 opacity-80 mt-1">Làm hết {QUESTION_BANK.length} câu • Max ping</div>
+                                        </button>
+                                    </div>
+                                    
+                                    <button onClick={onOpenTheory} className="w-full p-4 rounded-xl bg-slate-800/40 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/50 text-left transition-all group flex items-center justify-between">
+                                        <div>
+                                            <div className="font-bold text-emerald-400 group-hover:text-emerald-300 flex items-center gap-2">
+                                                <i className="ph-fill ph-book-open-text"></i> Ôn tập Lý thuyết
+                                            </div>
+                                            <div className="text-[10px] text-slate-400 mt-1 group-hover:text-slate-300">Xem kiến thức trọng tâm, chỉ hiện đáp án đúng, không áp lực</div>
+                                        </div>
+                                        <i className="ph-bold ph-caret-right text-emerald-500 group-hover:translate-x-1 transition-transform"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="md:col-span-5">
+                            <div className="glass rounded-2xl p-6 md:p-8 h-full flex flex-col">
+                                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                                    <i className="ph-duotone ph-sliders-horizontal text-indigo-400"></i> Tùy chỉnh
+                                </h3>
+                                
+                                <div className="space-y-5 flex-1">
+                                    <div>
+                                        <label className="text-[10px] text-slate-400 uppercase font-bold mb-1.5 block">Chủ đề</label>
+                                        <select value={selectedTheme} onChange={(e) => setSelectedTheme(e.target.value)} className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none">
+                                            <option value="ALL">Tất cả chủ đề</option>
+                                            {themes.map(t => <option key={t} value={t}>{t}</option>)}
+                                        </select>
+                                    </div>
+                                    
+                                    <div className="flex gap-4">
+                                        <div className="flex-1">
+                                            <label className="text-[10px] text-slate-400 uppercase font-bold mb-1.5 block">Số lượng</label>
+                                            <input type="number" min="5" max={QUESTION_BANK.length} value={numQuestions} onChange={(e) => setNumQuestions(Number(e.target.value))} className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none text-center font-mono" />
+                                        </div>
+                                        <div className="flex items-end pb-1">
+                                            <label className="flex items-center gap-3 cursor-pointer select-none group bg-slate-900 px-3 py-2.5 rounded-xl border border-slate-700 hover:border-indigo-500 transition-colors">
+                                                <div className={`w-5 h-5 rounded flex items-center justify-center transition-colors ${includeTF4 ? 'bg-indigo-600 text-white' : 'bg-slate-700'}`}>
+                                                    {includeTF4 && <i className="ph-bold ph-check text-xs"></i>}
+                                                </div>
+                                                <input type="checkbox" checked={includeTF4} onChange={(e) => setIncludeTF4(e.target.checked)} className="hidden" />
+                                                <span className="text-sm text-slate-300 group-hover:text-white font-medium">Câu Đ/S</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button onClick={() => handleStart('practice')} className="w-full py-3.5 rounded-xl bg-slate-700 hover:bg-white text-white hover:text-slate-900 font-bold border border-white/10 transition-all shadow-lg mt-6 flex items-center justify-center gap-2 group">
+                                    <i className="ph-bold ph-lightning text-yellow-400 group-hover:text-slate-900"></i> Luyện tập nhanh
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* History Table */}
+                    {history.length > 0 && (
+                        <div className="mt-8">
+                            <div className="glass rounded-2xl overflow-hidden border border-white/5">
+                               <div className="px-6 py-4 border-b border-white/10 flex justify-between items-center bg-slate-900/30">
+                                   <h3 className="text-sm font-bold text-white uppercase tracking-wider">Lịch sử hoạt động</h3>
+                                   <button onClick={() => { if(confirm("Xóa toàn bộ lịch sử?")) { clearHistory(); setHistory([]); } }} className="text-xs text-red-400 hover:text-red-300 hover:underline">Xóa tất cả</button>
+                               </div>
+                               <div className="overflow-x-auto">
+                                   <table className="w-full text-left text-sm text-slate-400">
+                                       <thead className="bg-white/5 text-[10px] font-bold text-slate-300 uppercase">
+                                           <tr>
+                                               <th className="px-6 py-3">Thời gian</th>
+                                               <th className="px-6 py-3">Chế độ</th>
+                                               <th className="px-6 py-3">Kết quả</th>
+                                           </tr>
+                                       </thead>
+                                       <tbody className="divide-y divide-white/5">
+                                           {history.slice(0, 5).map((rec) => (
+                                               <tr key={rec.id} className="hover:bg-white/5 transition-colors">
+                                                   <td className="px-6 py-4 font-mono text-xs">{new Date(rec.timestamp).toLocaleString('vi-VN')}</td>
+                                                   <td className="px-6 py-4">
+                                                       <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase ${rec.mode === 'exam' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'bg-slate-700 text-slate-300 border border-white/10'}`}>
+                                                           {rec.mode === 'exam' ? 'Thi thử' : rec.mode === 'full' ? 'Marathon' : 'Luyện tập'}
+                                                       </span>
+                                                   </td>
+                                                   <td className="px-6 py-4">
+                                                        <div className="flex items-center gap-2">
+                                                            <span className={`font-bold text-white ${rec.score >= 8 ? 'text-emerald-400' : rec.score < 5 ? 'text-red-400' : ''}`}>{rec.score.toFixed(2)}</span>
+                                                            <span className="text-xs opacity-50">/ 10</span>
+                                                        </div>
+                                                   </td>
+                                               </tr>
+                                           ))}
+                                       </tbody>
+                                   </table>
+                               </div>
                             </div>
                         </div>
                     )}
-
-                    <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
-                        <h3 className="hidden lg:block text-sm font-bold text-gray-400 mb-3 uppercase tracking-wider">Danh sách câu hỏi</h3>
-                        <div className="grid grid-cols-5 gap-2 pb-2">
-                            {state.questions.map((qItem, idx) => {
-                                const isCurr = idx === state.currentIndex;
-                                const ans = state.answers.get(qItem.id);
-                                const hasAns = ans !== undefined && (Array.isArray(ans) ? ans.some(x => x !== null) : true);
-                                
-                                let bg = "bg-white/5 text-gray-400";
-                                if (isCurr) bg = "bg-cyan-500/20 text-cyan-400 border border-cyan-500";
-                                else if (hasAns) bg = "bg-blue-500/20 text-blue-300";
-
-                                if (state.isFinished) {
-                                    const isCorrect = qItem.type === 'mcq' 
-                                        ? (ans === qItem.a)
-                                        : (Array.isArray(qItem.a) && Array.isArray(ans) && qItem.a.every((v, i) => v === ans[i]));
-                                    
-                                    if (isCorrect) bg = "bg-green-500 text-white border-green-600";
-                                    else bg = "bg-red-500 text-white border-red-600";
-                                    
-                                    if (isCurr) bg += " ring-2 ring-white";
-                                }
-
-                                return (
-                                    <button
-                                        key={idx}
-                                        onClick={() => {
-                                            dispatch({ type: 'GOTO', index: idx });
-                                            setShowMapMobile(false);
-                                        }}
-                                        className={`aspect-square rounded flex items-center justify-center text-xs font-bold transition-all ${bg}`}
-                                    >
-                                        {idx + 1}
-                                    </button>
-                                )
-                            })}
-                        </div>
-                    </div>
-                    
-                    <div className="p-4 border-t border-white/10 bg-[#16162b] lg:bg-transparent z-50">
-                        {!state.isFinished && (
-                            <button 
-                                onClick={handleSubmit}
-                                className="w-full mb-2 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-red-400 font-bold text-sm transition-all"
-                            >
-                                {state.mode === 'practice' ? "Kết thúc & Xem điểm" : "Nộp bài sớm"}
-                            </button>
-                        )}
-                        
-                        <button 
-                            onClick={() => {
-                                if(window.confirm("Thoát bài làm và quay về màn hình chính?")) dispatch({ type: 'HOME' });
-                            }}
-                            className="w-full py-3 rounded-xl hover:bg-white/5 text-gray-500 text-sm transition-all"
-                        >
-                            Thoát
-                        </button>
-                    </div>
                 </div>
-              </div>
-              
-              <div className="fixed bottom-24 right-4 lg:hidden z-30">
-                  <button 
-                    onClick={() => setShowMapMobile(!showMapMobile)}
-                    className="w-12 h-12 rounded-full bg-cyan-600 text-white shadow-lg flex items-center justify-center border-2 border-white/20 active:scale-95 transition-transform"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                    </svg>
-                  </button>
-              </div>
-            </div>
-          );
+            );
         };
 
+        // --- App Component ---
         const App = () => {
+          const [currentTime, setCurrentTime] = useState(new Date());
+          const [view, setView] = useState('start'); // Typescript inference handles string literal type
+
+          // Real-time clock
+          useEffect(() => {
+            const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+            return () => clearInterval(timer);
+          }, []);
+
           const [state, setState] = useState({
             mode: null,
             userName: "",
@@ -4103,25 +4347,29 @@
             revealed: new Set(),
             isFinished: false,
             score: 0,
-            timeRemaining: 0
+            timeRemaining: 0,
+            startTime: 0
           });
 
           const [hasSavedData, setHasSavedData] = useState(false);
 
+          // Load saved state on mount
           useEffect(() => {
               try {
-                  const saved = localStorage.getItem('IT_QUIZ_STATE_V2');
+                  const saved = localStorage.getItem('IT_QUIZ_CURRENT_SESSION');
                   if (saved) {
                       const parsed = JSON.parse(saved);
+                      // Revive Maps and Sets
                       if (parsed.mode && !parsed.isFinished && parsed.questions && parsed.questions.length > 0) {
                           setHasSavedData(true);
                       }
                   }
               } catch (e) {
-                  console.error("Failed to load state", e);
+                  console.error("Failed to load session", e);
               }
           }, []);
 
+          // Save state on change
           useEffect(() => {
               if (state.mode && !state.isFinished) {
                   const stateToSave = {
@@ -4129,163 +4377,239 @@
                       answers: Array.from(state.answers.entries()),
                       revealed: Array.from(state.revealed)
                   };
-                  localStorage.setItem('IT_QUIZ_STATE_V2', JSON.stringify(stateToSave));
+                  localStorage.setItem('IT_QUIZ_CURRENT_SESSION', JSON.stringify(stateToSave));
               } else if (state.mode === null || state.isFinished) {
-                  localStorage.removeItem('IT_QUIZ_STATE_V2');
+                  localStorage.removeItem('IT_QUIZ_CURRENT_SESSION');
                   setHasSavedData(false);
               }
           }, [state]);
 
+          // Exam Timer
           useEffect(() => {
             let timer;
-            if (state.mode === 'exam' && !state.isFinished && state.timeRemaining > 0) {
+            if (view === 'quiz' && state.mode === 'exam' && !state.isFinished && state.timeRemaining > 0) {
               timer = setInterval(() => {
                 setState(prev => {
                   if (prev.timeRemaining <= 1) {
-                     let score = 0;
-                     prev.questions.forEach(q => {
-                         const ans = prev.answers.get(q.id);
-                         if (q.type === 'mcq') {
-                             if (ans === q.a) score += 1;
-                         } else if (q.type === 'tf4' && Array.isArray(q.a) && Array.isArray(ans)) {
-                             let correctCount = 0;
-                             q.a.forEach((val, i) => { if (val === ans[i]) correctCount++; });
-                             score += (correctCount * 0.25);
-                         }
-                     });
-                     return { ...prev, timeRemaining: 0, isFinished: true, score: score }; 
+                     const finalState = calculateScore({ ...prev, timeRemaining: 0, isFinished: true });
+                     saveHistoryRecord(finalState);
+                     return finalState;
                   }
                   return { ...prev, timeRemaining: prev.timeRemaining - 1 };
                 });
               }, 1000);
             }
             return () => clearInterval(timer);
-          }, [state.mode, state.isFinished, state.timeRemaining]);
+          }, [view, state.mode, state.isFinished, state.timeRemaining]);
 
-          const handleContinue = () => {
+          const calculateScore = (currentState) => {
+             let rawScore = 0;
+             let maxScore = 0; 
+             
+             currentState.questions.forEach(q => {
+                 const ans = currentState.answers.get(q.id);
+                 if (q.type === 'mcq') {
+                     maxScore += 0.25;
+                     if (ans === q.a) rawScore += 0.25;
+                 } else if (q.type === 'tf4' && Array.isArray(q.a)) {
+                     maxScore += 1.0;
+                     if (Array.isArray(ans)) {
+                         let count = 0;
+                         q.a.forEach((val, i) => { if (val === ans[i]) count++; });
+                         rawScore += (count * 0.25);
+                     }
+                 }
+             });
+             const finalScore = maxScore > 0 ? (rawScore / maxScore) * 10 : 0;
+             return { ...currentState, score: finalScore };
+          };
+
+          const saveHistoryRecord = (finalState) => {
               try {
-                  const saved = localStorage.getItem('IT_QUIZ_STATE_V2');
-                  if (saved) {
-                      const parsed = JSON.parse(saved);
-                      setState({
-                          ...parsed,
-                          answers: new Map(parsed.answers),
-                          revealed: new Set(parsed.revealed)
-                      });
-                  }
+                  if (!finalState || !finalState.mode) return;
+                  const record = {
+                      id: `${Date.now()}_${Math.random().toString(16).slice(2)}`,
+                      timestamp: Date.now(),
+                      mode: finalState.mode,
+                      score: Number(finalState.score || 0),
+                      totalQuestions: (finalState.questions && finalState.questions.length) ? finalState.questions.length : 0,
+                      userName: finalState.userName || ""
+                  };
+                  saveHistory(record);
               } catch (e) {
-                  console.error("Error continuing", e);
-                  alert("Dữ liệu lưu bị lỗi, vui lòng bắt đầu mới.");
-                  localStorage.removeItem('IT_QUIZ_STATE_V2');
-                  setHasSavedData(false);
+                  console.error("Failed to save history record", e);
               }
           };
 
+          const makeEmptyState = () => ({
+            mode: null,
+            userName: "",
+            questions: [],
+            currentIndex: 0,
+            answers: new Map(),
+            revealed: new Set(),
+            isFinished: false,
+            score: 0,
+            timeRemaining: 0,
+            startTime: 0
+          });
+
+          const shuffle = (arr) => {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1));
+              [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+          };
+
+          const buildQuestionSet = (mode, opts) => {
+            let pool = QUESTION_BANK;
+
+            if (opts?.theme && opts.theme !== "ALL") pool = pool.filter(q => q.theme === opts.theme);
+            if (opts?.lesson && opts.lesson !== "ALL") pool = pool.filter(q => q.lesson === opts.lesson);
+            if (opts && opts.includeTF4 === false) pool = pool.filter(q => q.type !== 'tf4');
+
+            if (!pool || pool.length === 0) pool = QUESTION_BANK;
+
+            let num = Math.max(1, Number(opts?.num || 30));
+            if (mode === 'exam') num = 30;
+            if (mode === 'full') num = pool.length;
+
+            num = Math.min(num, pool.length);
+
+            const selected = (mode === 'full') ? [...pool] : shuffle(pool).slice(0, num);
+            return selected;
+          };
+
+          const start = (mode, opts) => {
+            const questions = buildQuestionSet(mode, opts);
+            const init = {
+              ...makeEmptyState(),
+              mode,
+              userName: opts?.name || "",
+              questions,
+              timeRemaining: mode === 'exam' ? 45 * 60 : 0,
+              startTime: Date.now()
+            };
+            setState(init);
+            setView('quiz');
+            setHasSavedData(false);
+          };
+
+          const continueSession = () => {
+            try {
+              const saved = localStorage.getItem('IT_QUIZ_CURRENT_SESSION');
+              if (!saved) return;
+              const parsed = JSON.parse(saved);
+
+              const revived = {
+                ...parsed,
+                answers: new Map(parsed.answers || []),
+                revealed: new Set(parsed.revealed || [])
+              };
+
+              if (!revived.mode || revived.isFinished || !revived.questions || revived.questions.length === 0) return;
+
+              setState(revived);
+              setView('quiz');
+              setHasSavedData(false);
+            } catch (e) {
+              console.error("Failed to continue session", e);
+            }
+          };
+
           const dispatch = (action) => {
+            if (!action || !action.type) return;
+
+            if (action.type === 'HOME') {
+              setView('start');
+              setState(makeEmptyState());
+              return;
+            }
+
             setState(prev => {
               switch (action.type) {
-                case 'START': {
-                  const { mode, opts } = action;
-                  let questions = [];
-                  let time = 0;
-
-                  if (mode === 'exam') {
-                    questions = buildExamSet(QUESTION_BANK);
-                    time = 45 * 60; 
-                  } else if (mode === 'full') {
-                    questions = [...QUESTION_BANK]; 
-                  } else {
-                    let pool = QUESTION_BANK;
-                    if (opts.theme !== 'ALL') pool = pool.filter(q => q.theme === opts.theme);
-                    if (opts.lesson !== 'ALL') pool = pool.filter(q => q.lesson === opts.lesson);
-                    if (!opts.includeTF4) pool = pool.filter(q => q.type !== 'tf4');
-                    questions = shuffle(pool).slice(0, opts.num);
-                  }
-
-                  return {
-                    mode,
-                    userName: opts.name,
-                    questions,
-                    currentIndex: 0,
-                    answers: new Map(),
-                    revealed: new Set(),
-                    isFinished: false,
-                    score: 0,
-                    timeRemaining: time
-                  };
-                }
                 case 'ANSWER': {
-                  const newAns = new Map(prev.answers);
-                  newAns.set(action.qId, action.answer);
-                  return { ...prev, answers: newAns };
+                  const nextAnswers = new Map(prev.answers);
+                  nextAnswers.set(action.qId, action.answer);
+                  return { ...prev, answers: nextAnswers };
                 }
-                case 'NEXT':
-                   return { ...prev, currentIndex: Math.min(prev.questions.length - 1, prev.currentIndex + 1) };
-                case 'PREV':
-                   return { ...prev, currentIndex: Math.max(0, prev.currentIndex - 1) };
-                case 'GOTO':
-                   return { ...prev, currentIndex: action.index };
                 case 'REVEAL': {
-                   const newRev = new Set(prev.revealed);
-                   newRev.add(action.qId);
-                   return { ...prev, revealed: newRev };
+                  const nextRevealed = new Set(prev.revealed);
+                  nextRevealed.add(action.qId);
+                  return { ...prev, revealed: nextRevealed };
+                }
+                case 'NEXT': {
+                  const nextIndex = Math.min(prev.currentIndex + 1, prev.questions.length - 1);
+                  return { ...prev, currentIndex: nextIndex };
+                }
+                case 'PREV': {
+                  const nextIndex = Math.max(prev.currentIndex - 1, 0);
+                  return { ...prev, currentIndex: nextIndex };
+                }
+                case 'GOTO': {
+                  const idx = Math.max(0, Math.min((action.index != null ? action.index : 0), prev.questions.length - 1));
+                  return { ...prev, currentIndex: idx };
                 }
                 case 'FINISH': {
-                   let rawScore = 0;
-                   let maxScore = 0; 
-                   
-                   prev.questions.forEach(q => {
-                       const ans = prev.answers.get(q.id);
-                       if (q.type === 'mcq') {
-                           maxScore += 0.25;
-                           if (ans === q.a) rawScore += 0.25;
-                       } else if (q.type === 'tf4' && Array.isArray(q.a)) {
-                           maxScore += 1.0;
-                           if (Array.isArray(ans)) {
-                               let count = 0;
-                               q.a.forEach((val, i) => { if (val === ans[i]) count++; });
-                               rawScore += (count * 0.25);
-                           }
-                       }
-                   });
-                   
-                   const finalScore = maxScore > 0 ? (rawScore / maxScore) * 10 : 0;
-
-                   return { ...prev, isFinished: true, score: finalScore, timeRemaining: 0 };
+                  if (prev.isFinished) return prev;
+                  const finalState = calculateScore({ ...prev, isFinished: true });
+                  saveHistoryRecord(finalState);
+                  return finalState;
                 }
-                case 'HOME':
-                   return {
-                     mode: null,
-                     userName: "",
-                     questions: [],
-                     currentIndex: 0,
-                     answers: new Map(),
-                     revealed: new Set(),
-                     isFinished: false,
-                     score: 0,
-                     timeRemaining: 0
-                   };
                 default:
                   return prev;
               }
             });
           };
 
-          return (
-            <div className="min-h-screen bg-[#0f0f1a] text-gray-200 font-sans selection:bg-cyan-500/30">
-                <header className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-fuchsia-500 z-50"></header>
+          const openTheory = () => setView('theory');
+          const backToStart = () => setView('start');
 
-                <main className="pt-8">
-                    {!state.mode ? (
-                        <StartScreen 
-                            onStart={(mode, opts) => dispatch({ type: 'START', mode, opts })} 
-                            hasSavedData={hasSavedData}
-                            onContinue={handleContinue}
-                        />
-                    ) : (
-                        <QuizScreen state={state} dispatch={dispatch} />
-                    )}
-                </main>
+          return (
+            <div className="min-h-screen">
+              <div className="max-w-7xl mx-auto px-4 pt-6 pb-4">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div>
+                    <h1 className="text-2xl md:text-3xl font-display font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-400 to-fuchsia-400">
+                      Ôn tập Tin học Pro
+                    </h1>
+                    <p className="text-xs text-slate-500 mt-1">Thi thử • Luyện tập • Kho lý thuyết • Lưu trạng thái tự động</p>
+                  </div>
+
+                  <div className="glass rounded-2xl px-4 py-3 flex items-center gap-3 border border-white/5">
+                    <i className="ph-duotone ph-calendar text-cyan-300 text-xl"></i>
+                    <div className="leading-tight">
+                      <div className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Bây giờ</div>
+                      <div className="font-mono font-bold text-slate-200 text-sm">{currentTime.toLocaleString('vi-VN')}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="max-w-7xl mx-auto px-4">
+                {view === 'start' && (
+                  <StartScreen
+                    onStart={start}
+                    onOpenTheory={openTheory}
+                    hasSavedData={hasSavedData}
+                    onContinue={continueSession}
+                  />
+                )}
+
+                {view === 'theory' && (
+                  <TheoryReview onBack={backToStart} />
+                )}
+
+                {view === 'quiz' && state.mode && (
+                  <QuizScreen state={state} dispatch={dispatch} />
+                )}
+              </div>
+
+              <div className="py-8 text-center text-xs text-slate-600">
+                <div>© {new Date().getFullYear()} • Built for practice • Auto-save enabled</div>
+              </div>
             </div>
           );
         };
