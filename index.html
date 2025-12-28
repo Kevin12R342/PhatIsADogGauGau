@@ -4,283 +4,213 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pita - The Regretful Bread</title>
-    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@1,300;1,700&family=Patrick+Hand&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Patrick+Hand&family=Courier+Prime:wght@700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* --- CẤU HÌNH MÀU SẮC NEON --- */
-        :root {
-            --bg-color: #0f111a;
-            --neon-pink: #ff7eb3;
-            --neon-purple: #bd93f9;
-            --neon-blue: #8be9fd;
-            --neon-red: #ff5555;
-            --neon-gold: #f1fa8c;
-            --text-color: #f8f8f2;
-        }
-
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(189, 147, 249, 0.15) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(255, 126, 179, 0.15) 0%, transparent 20%);
         }
-
-        /* Đồng hồ */
-        #clock {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: var(--neon-blue);
-            text-shadow: 0 0 15px rgba(139, 233, 253, 0.5);
-            margin-bottom: 20px;
-            letter-spacing: 3px;
-        }
-
-        .container {
-            background-color: rgba(26, 31, 54, 0.9);
-            padding: 40px;
-            border-radius: 25px;
-            text-align: center;
-            max-width: 650px;
-            width: 85%;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            position: relative;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin: 5px 0 15px 0;
-            background: -webkit-linear-gradient(45deg, var(--neon-pink), var(--neon-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .mood-text {
-            font-size: 0.9rem;
-            color: #aaa;
-            font-style: italic;
-            margin-bottom: 5px;
-            letter-spacing: 1px;
-        }
-
-        .kaomoji {
-            font-size: 2.2rem;
-            display: block;
-            margin: 0 0 20px 0;
-            color: var(--neon-purple);
-            text-shadow: 0 0 10px rgba(189, 147, 249, 0.5);
-        }
-
-        .bio-text {
-            font-size: 1rem;
-            line-height: 1.6;
-            color: #e0e0e0;
-            margin-bottom: 25px;
-            opacity: 0.8;
-        }
-
-        /* --- KHUNG KÝ ỨC (YOUTH FRAME) MỚI --- */
-        .youth-frame {
-            border: 2px dashed var(--neon-gold); /* Đổi sang màu vàng kim hoài niệm */
-            padding: 30px 20px;
-            margin: 25px 0;
-            position: relative;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
-        }
-
-        /* Tem dán trên khung */
-        .youth-frame::before {
-            content: "GỬI THỜI ÁO TRẮNG";
-            position: absolute;
-            top: -14px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: var(--neon-gold);
-            color: #000;
-            padding: 2px 15px;
-            font-size: 0.75rem;
-            font-weight: 900;
-            letter-spacing: 1px;
-            border-radius: 4px;
-            box-shadow: 0 0 10px var(--neon-gold);
-        }
-
-        .poem {
-            /* FONT CHỮ MỚI: Merriweather - Dễ đọc, sang trọng như sách */
-            font-family: 'Merriweather', serif; 
-            font-size: 1.15rem; /* Tăng kích thước chữ */
-            font-weight: 300;   /* Nét thanh mảnh */
-            font-style: italic;
-            color: #fff;        /* Màu trắng sáng cho dễ đọc */
-            line-height: 1.8;   /* Giãn dòng rộng ra cho thoáng */
-            margin-bottom: 20px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .pita-regret {
-            font-family: 'Segoe UI', sans-serif;
-            font-size: 0.95rem;
-            color: #ffcccc;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 15px;
-            margin-top: 10px;
-            text-align: justify; /* Căn đều 2 bên */
-        }
-
-        /* Phần Donate chữ chạy */
-        .donate-box {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 15px;
-            border-radius: 15px;
-            margin: 20px 0;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .donate-text {
-            margin: 0 0 10px 0; 
-            font-size: 0.9rem; 
-            opacity: 0.9;
-        }
-
-        .stk-highlight {
-            font-size: 1.5rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink), var(--neon-purple), var(--neon-blue));
-            background-size: 300% 100%;
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: rainbow_move 4s linear infinite;
-        }
-
+        .font-merriweather { font-family: 'Merriweather', serif; }
+        .font-courier { font-family: 'Courier Prime', monospace; }
+        
+        /* Rainbow Animation for Bank Number */
         @keyframes rainbow_move {
             0% { background-position: 100% 0; }
             100% { background-position: 0 0; }
         }
-
-        /* Quote box */
-        .quote-container {
-            margin: 20px 0;
-            min-height: 80px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border-top: 1px solid rgba(255,255,255,0.05);
-            padding-top: 20px;
+        .animate-rainbow {
+            animation: rainbow_move 4s linear infinite;
         }
 
-        .quote-text {
-            font-size: 0.95rem;
-            line-height: 1.5;
-            font-style: italic;
-            color: #aaa;
+        /* Slow Marquee Animation */
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
         }
-
-        .quote-author {
-            font-size: 0.8rem;
-            color: var(--neon-blue);
-            margin-top: 5px;
+        .animate-marquee-slow {
+            animation: marquee 30s linear infinite;
         }
-
-        /* Button */
-        .btn-enter {
-            display: inline-block;
-            margin-top: 5px;
-            padding: 12px 30px;
-            border: 1px solid var(--neon-blue);
-            color: var(--neon-blue);
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: bold;
-            transition: 0.3s;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-            font-size: 0.9rem;
+        .animate-marquee-slow:hover {
+            animation-play-state: paused;
         }
-
-        .btn-enter:hover {
-            color: #000;
-            box-shadow: 0 0 15px var(--neon-blue);
-            background: var(--neon-blue);
-        }
-
     </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0"
+  }
+}
+</script>
 </head>
-<body>
+<body class="bg-[#0f111a] text-[#f8f8f2] min-h-screen flex flex-col items-center justify-center overflow-x-hidden relative">
+    
+    <!-- Background Gradients -->
+    <div class="fixed inset-0 bg-[radial-gradient(circle_at_10%_20%,rgba(189,147,249,0.15)_0%,transparent_20%)] pointer-events-none"></div>
+    <div class="fixed inset-0 bg-[radial-gradient(circle_at_90%_80%,rgba(255,126,179,0.15)_0%,transparent_20%)] pointer-events-none"></div>
 
-    <div id="clock">00:00:00</div>
-
-    <div class="container">
-        <h1>Pita the Bread</h1>
-        
-        <div class="mood-text">Đôi mắt nhắm nghiền, mặc kệ sự đời...</div>
-        <span class="kaomoji">( ◡_◡ )</span> 
-        
-        <div class="bio-text">
-            Chào, tôi là Pita - Một ổ bánh mì Ai Cập đặc ruột nỗi buồn.
-        </div>
-        
-        <div class="youth-frame">
-            <div class="poem">
-                "Chuyến tàu trưởng thành không bán vé khứ hồi,<br>
-                Lời yêu nín lặng... đành thả trôi giữa dòng đời.<br>
-                Năm tháng dạy ta biết bao điều khôn lớn,<br>
-                Lại quên dạy cách... giữ người mình thương thôi."
-            </div>
-            
-            <div class="pita-regret">
-                Pita chỉ là một ổ bánh mì nhát gan, sợ đám đông, sợ va chạm nên Pita chọn cách trốn mình trong vỏ bọc khô cứng. <br><br>
-                Để bây giờ, khi nhìn lại, Pita chỉ biết ước gì mình đã sống "nở" hơn, cháy hơn. Nhưng tiếc thay, men đã chết và cơ hội đã qua 
-                <span style="color:var(--neon-red); font-weight:bold;">:((((</span>
-            </div>
-        </div>
-
-        <div class="donate-box">
-            <p class="donate-text">
-                An ủi tâm hồn xẹp lép này bằng chút <strong>bột nở</strong> hoặc <strong>men cái</strong> qua STK<strong> <p style="color:red">:)))</p> </strong>
-            </p>
-            <div class="stk-highlight">(*^_^*) Giờ này là 21h25 mà vẫn còn lướt thấy dòng này thì chỉ có thể là những người 'hệ cày cuốc'. 🐃 Chúc các đồng chí: Nhìn đâu trúng đó, khoanh bừa cũng đúng, giám thị dễ tính, não bộ thông minh đột xuất! Nhả vía 9+ cho tất cả mọi người! 💯 o(*￣▽￣*)ブ </div>
-        </div>
-
-        <div class="quote-container">
-            <div id="quote-text" class="quote-text">Loading wisdom...</div>
-            <div id="quote-author" class="quote-author"></div>
-        </div>
-
-        <a href="x.html" class="btn-enter">Bước vào thế giới của Pita ➤</a>
+    <!-- Clock -->
+    <div id="clock" class="font-courier text-4xl font-bold text-[#8be9fd] mb-5 tracking-[3px] drop-shadow-[0_0_15px_rgba(139,233,253,0.5)] z-10">
+        00:00:00
     </div>
 
-    <script>
-        /* Đồng hồ */
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('clock').textContent = now.toLocaleTimeString('vi-VN', { hour12: false });
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
+    <!-- Main Container -->
+    <div class="relative bg-[#1a1f36]/90 backdrop-blur-md rounded-[25px] p-6 sm:p-10 max-w-2xl w-full border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.8)] text-center z-10 mx-4">
+        
+        <!-- Header -->
+        <h1 class="text-4xl sm:text-5xl font-bold mb-4 bg-gradient-to-tr from-[#ff7eb3] to-[#bd93f9] text-transparent bg-clip-text">
+            Pita the Bread
+        </h1>
+        <div class="text-[#aaa] italic text-sm tracking-wider mb-2">
+            Đôi mắt nhắm nghiền, mặc kệ sự đời...
+        </div>
+        <span class="block text-4xl text-[#bd93f9] mb-6 drop-shadow-[0_0_10px_rgba(189,147,249,0.5)]">
+            ( ◡_◡ )
+        </span>
+        <div class="text-base sm:text-lg text-gray-300 leading-relaxed mb-6 opacity-80 font-light">
+            Chào, tôi là Pita - Một ổ bánh mì Ai Cập đặc ruột nỗi buồn.
+        </div>
 
-        /* Danh sách 50 câu triết lý */
-        const quotes = [
+        <!-- Poem Slider -->
+        <div class="relative border-2 border-dashed border-[#f1fa8c] p-6 sm:p-8 my-6 bg-black/30 rounded-lg shadow-[inset_0_0_20px_rgba(0,0,0,0.5)] border-opacity-70 group transition-all duration-300 hover:border-opacity-100">
+            <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#f1fa8c] text-black px-4 py-0.5 text-xs font-black tracking-widest rounded shadow-[0_0_10px_#f1fa8c] z-10 whitespace-nowrap">
+                GỬI THỜI ÁO TRẮNG
+            </div>
+            
+            <!-- Arrows -->
+            <button onclick="changePoem(-1)" class="absolute left-[-15px] sm:left-[-20px] top-1/2 -translate-y-1/2 bg-[#0f111a] border border-[#f1fa8c] text-[#f1fa8c] p-1.5 rounded-full hover:bg-[#f1fa8c] hover:text-black transition-colors z-20 shadow-[0_0_10px_rgba(241,250,140,0.3)]">
+                <i data-lucide="chevron-left"></i>
+            </button>
+            <button onclick="changePoem(1)" class="absolute right-[-15px] sm:right-[-20px] top-1/2 -translate-y-1/2 bg-[#0f111a] border border-[#f1fa8c] text-[#f1fa8c] p-1.5 rounded-full hover:bg-[#f1fa8c] hover:text-black transition-colors z-20 shadow-[0_0_10px_rgba(241,250,140,0.3)]">
+                <i data-lucide="chevron-right"></i>
+            </button>
+
+            <!-- Content -->
+            <div id="poem-container" class="min-h-[220px] flex flex-col justify-center transition-opacity duration-300">
+                <!-- Javascript will inject content here -->
+            </div>
+            
+            <!-- Dots -->
+            <div id="poem-dots" class="flex justify-center gap-2 mt-4">
+                <!-- Javascript will inject dots here -->
+            </div>
+        </div>
+
+        <!-- Regret Text -->
+        <div class="text-[#ffcccc] text-sm sm:text-base text-justify leading-relaxed border-t border-white/10 pt-4 mt-4 font-sans">
+            Pita chỉ là một ổ bánh mì nhát gan, sợ đám đông, sợ va chạm nên Pita chọn cách trốn mình trong vỏ bọc khô cứng.
+            <br /><br />
+            Để bây giờ, khi nhìn lại, Pita chỉ biết ước gì mình đã sống "nở" hơn, cháy hơn. Nhưng tiếc thay, men đã chết và cơ hội đã qua 
+            <span class="text-[#ff5555] font-bold ml-1">:((((</span>
+        </div>
+
+        <!-- Donate Section -->
+        <div class="mt-8 mb-4">
+             <!-- Marquee Text (Always Visible) -->
+             <div class="relative h-12 overflow-hidden bg-black/20 rounded-lg border border-white/5 flex items-center mb-4">
+                <div class="absolute whitespace-nowrap animate-marquee-slow px-4 w-full text-center sm:text-left">
+                  <span class="text-[#8be9fd] text-sm font-bold">
+                    (*^_^*) Giờ này là 21h25 mà vẫn còn lướt thấy dòng này thì chỉ có thể là những người 'hệ cày cuốc'. 🐃 Chúc các đồng chí: Nhìn đâu trúng đó, khoanh bừa cũng đúng, giám thị dễ tính, não bộ thông minh đột xuất! Nhả vía 9+ cho tất cả mọi người! 💯 o(*￣▽￣*)ブ
+                  </span>
+                </div>
+            </div>
+
+            <!-- Toggle Button (Left aligned small button) -->
+            <div class="flex justify-start">
+                <button onclick="toggleDonate()" id="donate-btn" class="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold border border-[#bd93f9] text-[#bd93f9] hover:bg-[#bd93f9]/10 transition-all">
+                    <i data-lucide="gift" class="w-3 h-3"></i>
+                    <span>Ủng hộ vụn bánh</span>
+                </button>
+            </div>
+
+            <!-- Hidden Content -->
+            <div id="donate-content" class="hidden overflow-hidden transition-all duration-500">
+                <div class="bg-white/5 border border-white/10 rounded-xl p-4 mt-3 backdrop-blur-sm">
+                    <p class="text-sm text-gray-200 mb-3 opacity-90">
+                        An ủi tâm hồn xẹp lép này bằng chút <strong>bột nở</strong> hoặc <strong>men cái</strong> qua STK <strong class="text-red-500">:)))</strong>
+                    </p>
+                    <div class="bg-black/40 rounded-lg p-3 mb-3 border border-white/5 flex flex-col items-center">
+                        <span class="text-xs text-gray-400 uppercase tracking-widest mb-1">MB BANK</span>
+                        <span class="text-xl sm:text-2xl font-black tracking-widest bg-gradient-to-r from-[#8be9fd] via-[#ff7eb3] to-[#bd93f9] text-transparent bg-clip-text bg-[length:200%_auto] animate-rainbow">
+                            0825625968
+                        </span>
+                    </div>
+                    <div class="pt-2 border-t border-white/10 text-center">
+                        <p class="text-xs text-gray-500">
+                            Cần hỗ trợ liên hệ: <a href="mailto:thephat8010@gmail.com" class="text-[#ff7eb3] hover:underline">thephat8010@gmail.com</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quote -->
+        <div id="quote-container" class="my-8 py-6 border-t border-white/5 min-h-[100px] flex flex-col justify-center items-center transition-opacity duration-500">
+            <p id="quote-text" class="text-base text-gray-400 italic text-center leading-relaxed max-w-md mx-auto">Loading...</p>
+            <p id="quote-author" class="text-sm text-[#8be9fd] mt-2 font-semibold"></p>
+        </div>
+
+        <!-- Enter Button -->
+        <a href="x.html" class="inline-block px-8 py-3 mt-2 rounded-full border border-[#8be9fd] text-[#8be9fd] font-bold transition-all duration-300 hover:bg-[#8be9fd] hover:text-black hover:shadow-[0_0_20px_#8be9fd] relative z-10 no-underline">
+            Bước vào thế giới của Pita ➤
+        </a>
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        // Data
+        const POEMS = [
+            {
+                title: "Góc nhìn: Sự đánh đổi của tham vọng",
+                content: ["Ta đổi mộng mơ lấy hành trang vững chãi,", "Mải miết chạy theo những ánh hào quang xa.", "Khi đứng trên cao nhìn về ngày tháng cũ,", "Mới hay mình thắng cả thiên hạ... nhưng lại thua một người."],
+                philosophy: "Chúng ta thường nghĩ phải thành công rồi mới có tư cách yêu đương, nhưng khi thành công rồi thì người ấy đã không còn đợi."
+            },
+            {
+                title: "Góc nhìn: Bài học còn thiếu sót",
+                content: ["Chuyến tàu trưởng thành không bán vé khứ hồi,", "Lời yêu nín lặng... đành thả trôi giữa dòng đời.", "Năm tháng dạy ta biết bao điều khôn lớn,", "Lại quên dạy cách... giữ người mình thương thôi."],
+                philosophy: "Trường học dạy kiến thức, trường đời dạy khôn ngoan, nhưng không nơi nào dạy cách giữ lấy một mối chân tình khi tay trắng."
+            },
+            {
+                title: "Góc nhìn: Kẻ lạ từng quen",
+                content: ["Ta bán thanh xuân để mua ngày rộng lớn,", "Nhưng chẳng mua nổi khoảnh khắc đứng cạnh người.", "Có những cái tên, chỉ thuộc về quá khứ,", "Nhắc lại làm chi... cho buốt giá nụ cười."],
+                philosophy: "Khoảng cách xa nhất không phải là địa lý, mà là khi hai người từng thân thuộc nhất trở nên xa lạ nhất vì dòng chảy của thời gian."
+            },
+            {
+                title: "Góc nhìn: Sự hữu hạn của khoảnh khắc",
+                content: ["Cứ ngỡ thanh xuân là thước phim dài nhất,", "Hóa ra chỉ là... cái chớp mắt của thời gian.", "Người đi bên tôi những ngày mưa nắng ấy,", "Giờ hóa người dưng... giữa phố thị huy hoàng."],
+                philosophy: "Thanh xuân giống như một cái chớp mắt. Chúng ta cứ ngỡ là 'mãi mãi', nhưng thực ra chỉ là 'một thời'."
+            },
+             {
+                title: "Góc nhìn: Hai đường thẳng cắt nhau",
+                content: ["Thanh xuân năm ấy là giao điểm duy nhất,", "Để rồi cả đời... ta vĩnh viễn rẽ đôi.", "Vũ trụ bao la, ức vạn người gặp gỡ,", "Sai một nhịp bước... là lạc mất nhau rồi."],
+                philosophy: "Cấp 3 là giao điểm duy nhất. Sau giao điểm đó, càng đi xa, khoảng cách giữa hai người càng lớn. Đó là quy luật, không phải lỗi lầm."
+            },
+            {
+                title: "Góc nhìn: Đúng người, sai thời điểm",
+                content: ["Ta bán ngây thơ để mua vé vào đời,", "Chuyến tàu tốc hành... lạc mất người thương ơi.", "Cấp ba ấy, bầu trời chung một sắc,", "Chỉ lỡ một nhịp lòng, là lỡ cả lứa đôi."],
+                philosophy: "Khi còn trẻ, chúng ta cùng nhìn một bầu trời, nhưng chỉ cần một khoảnh khắc ngập ngừng, hai đường thẳng song song sẽ vĩnh viễn rẽ ngang."
+            },
+            {
+                title: "Góc nhìn: Sự im lặng và Cái giá của trưởng thành",
+                content: ["Đem chút dại khờ đổi lấy sự an nhiên,", "Nên lời thương ấy... đành thả vào hư không.", "Thanh xuân vẫn đẹp, nhưng buồn như phiến lá,", "Xanh thắm một thời, rồi rụng giữa mênh mông."],
+                philosophy: "Chúng ta chọn sự an toàn để không bị tổn thương, nhưng chính sự an toàn đó lại giết chết một khả năng hạnh phúc."
+            },
+            {
+                title: "Góc nhìn: Ký ức đóng băng",
+                content: ["Ta bán thanh xuân mua vé tàu viễn xứ,", "Ngoảnh lại sân ga... bóng người đã nhạt nhòa.", "Vũ trụ bao la, ức vạn người gặp gỡ,", "Nhưng chẳng còn ai... là người của hôm qua."],
+                philosophy: "Người mình nhớ không phải là họ của hiện tại, mà là họ của năm 17 tuổi. Đó là người mình vĩnh viễn không gặp lại được nữa."
+            }
+        ];
+
+        const QUOTES = [
             { text: "Kẻ mạnh không phải là kẻ giẫm lên vai người khác để thỏa mãn lòng ích kỷ. Kẻ mạnh chính là kẻ giúp đỡ kẻ khác trên đôi vai mình.", author: "Nam Cao" },
             { text: "Hạnh phúc không phải là một đích đến, mà là một cách đi.", author: "Khuyết danh" },
             { text: "Con người sinh ra không phải để tan biến đi như một hạt cát vô danh. Họ sinh ra để in dấu lại trên mặt đất.", author: "V. Sukhomlinsky" },
@@ -289,75 +219,114 @@
             { text: "Tôi tư duy, nên tôi tồn tại.", author: "René Descartes" },
             { text: "Yêu là đau khổ. Không yêu thì ta chết dần mòn.", author: "Trịnh Công Sơn" },
             { text: "Nếu bạn nhìn lâu vào vực thẳm, vực thẳm cũng sẽ nhìn lại bạn.", author: "Friedrich Nietzsche" },
-            { text: "Tất cả mọi người đều là thiên tài. Nhưng nếu bạn đánh giá một con cá bằng khả năng leo cây, nó sẽ sống suốt đời với niềm tin rằng nó là kẻ đần độn.", author: "Albert Einstein" },
             { text: "Sống mà không có mục đích giống như đi thuyền mà không có la bàn.", author: "Dostoevsky" },
             { text: "Điều quan trọng không phải là chúng ta sống được bao lâu, mà là chúng ta sống sâu sắc như thế nào.", author: "Seneca" },
-            { text: "Tự do không phải là làm những gì mình muốn, mà là không phải làm những gì mình không muốn.", author: "Jean-Jacques Rousseau" },
             { text: "Nỗi đau khổ lớn nhất của con người là sự cô đơn.", author: "Mẹ Teresa" },
             { text: "Không có gì cao thượng hơn là sự im lặng.", author: "Beethoven" },
             { text: "Cái đẹp cứu rỗi thế giới.", author: "Dostoevsky" },
-            { text: "Sự thật hiếm khi tinh khiết và không bao giờ đơn giản.", author: "Oscar Wilde" },
             { text: "Thà bị ghét vì chính con người thật của mình, còn hơn được yêu thương vì một con người giả tạo.", author: "André Gide" },
-            { text: "Cuộc đời là một vở kịch hài đối với những người hay suy nghĩ, và là một bi kịch đối với những người hay cảm nhận.", author: "Horace Walpole" },
-            { text: "Chúng ta chấp nhận tình yêu mà chúng ta nghĩ rằng mình xứng đáng.", author: "Stephen Chbosky" },
             { text: "Vết thương là nơi ánh sáng đi vào bạn.", author: "Rumi" },
-            { text: "Không ai có thể tắm hai lần trên một dòng sông.", author: "Heraclitus" },
-            { text: "Đừng để những ồn ào của ý kiến người khác nhấn chìm tiếng nói bên trong bạn.", author: "Steve Jobs" },
             { text: "Người ta chỉ nhìn thấy thật rõ ràng bằng trái tim. Cái cốt yếu thì mắt thường không thấy được.", author: "Saint-Exupéry" },
             { text: "Hạnh phúc giống như một con bướm, khi bạn càng cố đuổi bắt, nó càng bay xa. Nhưng nếu bạn ngồi yên, nó có thể sẽ đậu nhẹ lên vai bạn.", author: "Nathaniel Hawthorne" },
-            { text: "Cuộc sống không phải là chờ đợi cơn bão qua đi, mà là học cách khiêu vũ dưới mưa.", author: "Vivian Greene" },
-            { text: "Kẻ thù lớn nhất của tri thức không phải là sự ngu dốt, mà là ảo tưởng về sự hiểu biết.", author: "Stephen Hawking" },
-            { text: "Thời gian là thứ quý giá nhất mà một người có thể tiêu xài.", author: "Theophrastus" },
-            { text: "Cái chết không phải là điều tồi tệ nhất; có những thứ còn tồi tệ hơn cả cái chết.", author: "J.K. Rowling" },
-            { text: "Hãy sống như thể bạn sẽ chết ngày mai. Hãy học như thể bạn sẽ sống mãi mãi.", author: "Mahatma Gandhi" },
-            { text: "Mọi thứ rồi sẽ qua đi, chỉ có tình người ở lại.", author: "M. Gorki" },
-            { text: "Đừng đếm những ngày trôi qua, hãy làm cho những ngày ấy trở nên đáng nhớ.", author: "Muhammad Ali" },
             { text: "Sách là chiếc rìu phá vỡ biển băng trong tâm hồn chúng ta.", author: "Franz Kafka" },
-            { text: "Tình yêu là sự dũng cảm cực độ.", author: "Lão Tử" },
-            { text: "Biết người là trí, biết mình là sáng.", author: "Lão Tử" },
-            { text: "Không có nỗi buồn nào vĩ đại hơn việc nhớ lại thời khắc hạnh phúc khi đang đau khổ.", author: "Dante Alighieri" },
-            { text: "Con người là sản phẩm của những gì mình nghĩ.", author: "Thích Ca Mâu Ni" },
             { text: "Trong sâu thẳm mùa đông, tôi cuối cùng cũng hiểu rằng trong tôi có một mùa hè bất diệt.", author: "Albert Camus" },
-            { text: "Đừng sợ đi chậm, chỉ sợ đứng yên.", author: "Tục ngữ Trung Hoa" },
-            { text: "Sự trả thù tốt nhất là sống thật hạnh phúc.", author: "Khuyết danh" },
-            { text: "Lòng tốt là thứ ngôn ngữ người điếc có thể nghe và người mù có thể thấy.", author: "Mark Twain" },
-            { text: "Khi bạn muốn từ bỏ, hãy nhớ lại lý do khiến bạn bắt đầu.", author: "Khuyết danh" },
             { text: "Đừng phán xét tôi qua thành công của tôi, hãy phán xét tôi qua số lần tôi gục ngã và đứng dậy.", author: "Nelson Mandela" },
-            { text: "Cuộc đời ngắn ngủi lắm, hãy phá vỡ các nguyên tắc, tha thứ thật nhanh, hôn thật chậm, yêu thật lòng, cười thật to.", author: "Mark Twain" },
-            { text: "Không phải ai lang thang cũng là người đi lạc.", author: "J.R.R. Tolkien" },
-            { text: "Mỗi người là một mặt trăng, ai cũng có một mặt tối không bao giờ cho ai thấy.", author: "Mark Twain" },
-            { text: "Sự lo lắng không làm cho những rắc rối của ngày mai biến mất, nó chỉ làm mất đi sức mạnh của ngày hôm nay.", author: "Corrie Ten Boom" },
-            { text: "Thế giới này không nguy hiểm vì những kẻ xấu, mà vì những người nhìn thấy cái xấu mà không làm gì cả.", author: "Albert Einstein" },
-            { text: "Chết không phải là dập tắt ngọn nến, mà là tắt đèn vì bình minh đã đến.", author: "Rabindranath Tagore" },
-            { text: "Hãy quay về phía mặt trời và bạn sẽ không thấy bóng tối.", author: "Helen Keller" },
-            { text: "Nếu bạn muốn biết giá trị của tiền bạc, hãy thử đi vay mượn.", author: "Benjamin Franklin" }
+            { text: "Không phải ai lang thang cũng là người đi lạc.", author: "J.R.R. Tolkien" }
         ];
 
-        function showRandomQuote() {
-            const randomIndex = Math.floor(Math.random() * quotes.length);
-            const quote = quotes[randomIndex];
-            
-            const textEl = document.getElementById('quote-text');
-            const authorEl = document.getElementById('quote-author');
-            
-            textEl.style.opacity = 0;
-            authorEl.style.opacity = 0;
+        // State
+        let currentPoemIndex = 0;
 
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            updateClock();
+            setInterval(updateClock, 1000);
+            renderPoem(0);
+            renderRandomQuote();
+        });
+
+        // Clock
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').textContent = now.toLocaleTimeString('vi-VN', { hour12: false });
+        }
+
+        // Poems
+        function renderPoem(index) {
+            const poem = POEMS[index];
+            const container = document.getElementById('poem-container');
+            
+            // Animation fade out
+            container.style.opacity = '0';
+            
             setTimeout(() => {
-                textEl.innerText = quote.text;
-                authorEl.innerText = "— " + quote.author;
-                textEl.style.opacity = 1;
-                authorEl.style.opacity = 1;
+                let html = `
+                    <h3 class="text-[#f1fa8c] text-sm font-bold uppercase tracking-wide mb-4 opacity-80">
+                        ${poem.title}
+                    </h3>
+                    <div class="font-merriweather text-lg sm:text-xl font-light italic text-white leading-relaxed mb-6 drop-shadow-md">
+                        ${poem.content.map(line => `<p class="mb-1">${line}</p>`).join('')}
+                    </div>
+                    <div class="text-xs sm:text-sm text-gray-400 font-serif italic border-t border-white/10 pt-4 mt-2">
+                        💡 ${poem.philosophy}
+                    </div>
+                `;
+                container.innerHTML = html;
+                container.style.opacity = '1';
+                renderDots(index);
             }, 300);
         }
 
-        document.getElementById('quote-text').style.transition = "opacity 0.5s";
-        document.getElementById('quote-author').style.transition = "opacity 0.5s";
+        function changePoem(direction) {
+            currentPoemIndex += direction;
+            if (currentPoemIndex >= POEMS.length) currentPoemIndex = 0;
+            if (currentPoemIndex < 0) currentPoemIndex = POEMS.length - 1;
+            renderPoem(currentPoemIndex);
+        }
 
-        window.onload = showRandomQuote;
+        function renderDots(activeIdx) {
+            const dotsContainer = document.getElementById('poem-dots');
+            let html = '';
+            POEMS.forEach((_, idx) => {
+                const activeClass = idx === activeIdx ? 'bg-[#f1fa8c] w-3' : 'bg-gray-600';
+                html += `<button onclick="goToPoem(${idx})" class="w-1.5 h-1.5 rounded-full transition-all duration-300 ${activeClass}"></button>`;
+            });
+            dotsContainer.innerHTML = html;
+        }
+
+        function goToPoem(index) {
+            currentPoemIndex = index;
+            renderPoem(index);
+        }
+
+        // Donate Toggle
+        function toggleDonate() {
+            const content = document.getElementById('donate-content');
+            const btn = document.getElementById('donate-btn');
+            const isHidden = content.classList.contains('hidden');
+
+            if (isHidden) {
+                content.classList.remove('hidden');
+                btn.innerHTML = `<i data-lucide="x" class="w-3 h-3"></i><span>Đóng</span>`;
+                btn.classList.add('bg-[#bd93f9]', 'text-black', 'shadow-[0_0_15px_#bd93f9]');
+                btn.classList.remove('bg-transparent', 'text-[#bd93f9]');
+            } else {
+                content.classList.add('hidden');
+                btn.innerHTML = `<i data-lucide="gift" class="w-3 h-3"></i><span>Ủng hộ vụn bánh</span>`;
+                btn.classList.remove('bg-[#bd93f9]', 'text-black', 'shadow-[0_0_15px_#bd93f9]');
+                btn.classList.add('bg-transparent', 'text-[#bd93f9]');
+            }
+            lucide.createIcons();
+        }
+
+        // Quotes
+        function renderRandomQuote() {
+            const idx = Math.floor(Math.random() * QUOTES.length);
+            const quote = QUOTES[idx];
+            document.getElementById('quote-text').textContent = `"${quote.text}"`;
+            document.getElementById('quote-author').textContent = `— ${quote.author}`;
+        }
     </script>
 </body>
 </html>
-
-
-
